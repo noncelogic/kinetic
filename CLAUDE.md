@@ -89,3 +89,77 @@ pnpm format               # Format with Prettier
 3. **Run tests** after implementation: `pnpm test`
 4. **One package at a time** — don't edit multiple packages in one response
 5. **Update this file** when adding new patterns or commands
+
+## State Management
+
+### XState for Workflows
+Complex application flows use XState machines in `@repo/state`:
+
+```typescript
+import { useOnboarding } from '@repo/state';
+
+function OnboardingFlow() {
+  const [state, send] = useOnboarding();
+  
+  if (state.matches('emailStep')) {
+    return <EmailForm onNext={(email) => {
+      send({ type: 'SET_EMAIL', email });
+      send({ type: 'NEXT' });
+    }} />;
+  }
+  // ... other steps
+}
+```
+
+**Why XState:**
+- States are explicit — no impossible transitions
+- Guards enforce business rules
+- Context is fully typed
+- Agents can't produce invalid state logic
+
+### TanStack Form + Zod
+Forms are driven by Zod schemas in `@repo/forms`:
+
+```typescript
+import { useZodForm, TextField } from '@repo/forms';
+import { ContactFormSchema } from '@repo/forms/schemas';
+
+function ContactForm() {
+  const form = useZodForm(ContactFormSchema, {
+    onSubmit: async (values) => {
+      // values is typed from schema
+    },
+  });
+  
+  return (
+    <form onSubmit={form.handleSubmit}>
+      <form.Field name="email">
+        {(field) => <TextField field={field} label="Email" type="email" />}
+      </form.Field>
+    </form>
+  );
+}
+```
+
+## Linting Rules
+
+This project uses **strict ESLint** to catch agent mistakes:
+
+- No `any` types
+- No floating promises
+- No unused variables
+- Strict boolean expressions
+- Import ordering enforced
+
+Run before committing:
+```bash
+pnpm lint        # Check
+pnpm lint:fix    # Auto-fix
+```
+
+## Tips for Agents
+
+1. **State machines**: Define all possible states and transitions upfront
+2. **Form schemas**: Start with Zod schema, form derives from it
+3. **Lint early**: Run `pnpm lint` after changes to catch mistakes
+4. **Type errors = stop**: Don't proceed if `pnpm typecheck` fails

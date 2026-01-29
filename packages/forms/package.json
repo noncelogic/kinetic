@@ -1,0 +1,24 @@
+{
+  "name": "@repo/forms",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@repo/entities": "workspace:*",
+    "@tanstack/react-form": "^0.34.0",
+    "@tanstack/zod-form-adapter": "^0.34.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@repo/config": "workspace:*",
+    "@types/react": "^19.0.0",
+    "typescript": "^5.5.0"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0"
+  }
+}
