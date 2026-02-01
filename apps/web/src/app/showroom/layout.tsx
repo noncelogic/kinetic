@@ -1,5 +1,7 @@
-import type { Metadata } from 'next';
 import { JetBrains_Mono } from 'next/font/google';
+
+import type { Metadata } from 'next';
+import type { ReactElement, ReactNode } from 'react';
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin'],
@@ -52,10 +54,10 @@ export const metadata: Metadata = {
 export default function ShowroomLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
-}>) {
+  children: ReactNode;
+}>): ReactElement {
   return (
-    <div className={`${jetbrainsMono.variable}`}>
+    <div className={jetbrainsMono.variable}>
       {children}
     </div>
   );

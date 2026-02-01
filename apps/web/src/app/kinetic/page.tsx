@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect, type ReactElement } from 'react';
 import Link from 'next/link';
+import { useState, useEffect, type ReactElement } from 'react';
 
 // ============================================================================
 // SECRET SAUCE DIAGRAM - SVG Component
@@ -13,7 +13,7 @@ function SecretSauceDiagram(): ReactElement {
     const interval = setInterval(() => {
       setActiveStep((prev) => (prev + 1) % 6);
     }, 2000);
-    return () => clearInterval(interval);
+    return () => { clearInterval(interval); };
   }, []);
 
   const steps = [
@@ -472,7 +472,7 @@ export default function KineticMarketingPage(): ReactElement {
                 description: 'Schemas integrate into your Next.js app. Policies become runtime guarantees.',
                 color: 'emerald',
               },
-            ].map((item, index) => (
+            ].map((item) => (
               <div
                 key={item.step}
                 className="flex items-start gap-6 p-6 rounded-2xl bg-slate-800/30 border border-slate-700/30 hover:border-slate-600/50 transition-all group"

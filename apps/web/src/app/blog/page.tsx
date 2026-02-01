@@ -1,4 +1,7 @@
 import Link from 'next/link';
+
+import type { ReactElement } from 'react';
+
 import { getAllPosts } from '@/lib/blog';
 
 export const metadata = {
@@ -6,7 +9,7 @@ export const metadata = {
   description: 'Thoughts on AI, software engineering, and building products.',
 };
 
-export default async function BlogIndex() {
+export default async function BlogIndex(): Promise<ReactElement> {
   const posts = await getAllPosts();
 
   return (

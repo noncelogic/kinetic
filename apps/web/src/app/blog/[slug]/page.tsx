@@ -1,12 +1,15 @@
 import { notFound } from 'next/navigation';
-import { getPostBySlug, getAllPosts } from '@/lib/blog';
+
 import type { Metadata } from 'next';
+import type { ReactElement } from 'react';
+
+import { getAllPosts, getPostBySlug } from '@/lib/blog';
 
 interface Props {
   params: Promise<{ slug: string }>;
 }
 
-export async function generateStaticParams() {
+export async function generateStaticParams(): Promise<{ slug: string }[]> {
   const posts = await getAllPosts();
   return posts.map((post) => ({ slug: post.slug }));
 }
@@ -14,7 +17,9 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const post = await getPostBySlug(slug);
-  if (!post) return {};
+  if (post === null) {
+    return {};
+  }
 
   return {
     title: `${post.title} | Blog`,
@@ -28,11 +33,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function BlogPost({ params }: Props) {
+export default async function BlogPost({ params }: Props): Promise<ReactElement> {
   const { slug } = await params;
   const post = await getPostBySlug(slug);
 
-  if (!post) {
+  if (post === null) {
     notFound();
   }
 

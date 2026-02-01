@@ -1,6 +1,9 @@
 import Link from 'next/link';
 
-export default function Home() {
+import type { Route } from 'next';
+import type { ReactElement } from 'react';
+
+export default function Home(): ReactElement {
   return (
     <div className="min-h-screen">
       {/* Nav */}
@@ -15,7 +18,7 @@ export default function Home() {
               Pricing
             </Link>
             <Link
-              href="/login"
+              href={"#pricing" as Route}
               className="text-sm bg-brand-600 text-white px-4 py-2 rounded-lg hover:bg-brand-700 transition"
             >
               Get Started
@@ -197,9 +200,9 @@ export default function Home() {
             © {new Date().getFullYear()} YourSaaS. All rights reserved.
           </div>
           <div className="flex gap-6 text-sm text-gray-500">
-            <Link href="/privacy" className="hover:text-gray-900">Privacy</Link>
-            <Link href="/terms" className="hover:text-gray-900">Terms</Link>
-            <Link href="/contact" className="hover:text-gray-900">Contact</Link>
+            <a href="#" className="hover:text-gray-900">Privacy</a>
+            <a href="#" className="hover:text-gray-900">Terms</a>
+            <a href="#" className="hover:text-gray-900">Contact</a>
           </div>
         </div>
       </footer>

@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect, type ReactElement } from 'react';
 import Link from 'next/link';
+import { useState, useEffect, type ReactElement } from 'react';
 
 // ============================================================================
 // KINETIC BRAND SYSTEM
@@ -27,7 +27,7 @@ function VelocityTicker(): ReactElement {
         signoffs: Math.min(99, prev.signoffs + Math.random() * 0.5),
       }));
     }, 3000);
-    return () => clearInterval(interval);
+    return () => { clearInterval(interval); };
   }, []);
 
   return (

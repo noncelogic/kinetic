@@ -2,17 +2,22 @@
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { httpBatchLink } from '@trpc/client';
-import { useState } from 'react';
+import { useState, type ReactNode, type ReactElement } from 'react';
 import superjson from 'superjson';
+
 import { trpc } from './client';
 
-function getBaseUrl() {
-  if (typeof window !== 'undefined') return '';
-  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
+function getBaseUrl(): string {
+  if (typeof window !== 'undefined') {
+    return '';
+  }
+  if (process.env.VERCEL_URL !== undefined && process.env.VERCEL_URL !== '') {
+    return `https://${process.env.VERCEL_URL}`;
+  }
   return 'http://localhost:3000';
 }
 
-export function TRPCProvider({ children }: { children: React.ReactNode }) {
+export function TRPCProvider({ children }: { children: ReactNode }): ReactElement {
   const [queryClient] = useState(() => new QueryClient());
   const [trpcClient] = useState(() =>
     trpc.createClient({
