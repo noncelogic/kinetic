@@ -176,7 +176,7 @@ export default function KineticAdminPage(): ReactElement {
       updateToast(mainToastId, {
         icon: '✅',
         title: 'Generation Complete',
-        description: `${genResult.assets.length} asset(s) generated successfully`,
+        description: `${genResult.assets.length.toString()} asset(s) generated successfully`,
         type: 'success',
         progress: undefined,
       });
@@ -253,7 +253,9 @@ export default function KineticAdminPage(): ReactElement {
                 <textarea
                   id="prompt"
                   value={prompt}
-                  onChange={(e) => setPrompt(e.target.value)}
+                  onChange={(e) => {
+                    setPrompt(e.target.value);
+                  }}
                   disabled={isGenerating}
                   className="w-full h-24 px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:border-violet-500 focus:ring-1 focus:ring-violet-500 outline-none resize-none disabled:opacity-50"
                   placeholder="Describe what you want to generate..."

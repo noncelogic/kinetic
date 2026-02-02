@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -12,6 +12,7 @@
   "dependencies": {
     "@repo/database": "workspace:*",
     "@repo/entities": "workspace:*",
+    "@repo/feedback": "workspace:^",
     "@repo/service": "workspace:*",
     "@tanstack/react-query": "^5.56.0",
     "@trpc/client": "^11.0.0",

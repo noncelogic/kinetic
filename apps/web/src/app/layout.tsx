@@ -2,6 +2,8 @@ import { Inter } from 'next/font/google';
 
 import type { Metadata } from 'next';
 import type { ReactElement, ReactNode } from 'react';
+import { FeedbackWrapper } from '@/components/feedback-wrapper';
+import { TRPCProvider } from '@/trpc/provider';
 
 import './globals.css';
 
@@ -24,7 +26,12 @@ export default function RootLayout({
 }>): ReactElement {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <TRPCProvider>
+          {children}
+          <FeedbackWrapper />
+        </TRPCProvider>
+      </body>
     </html>
   );
 }

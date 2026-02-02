@@ -23,6 +23,16 @@ const config: Config = {
           900: '#0c4a6e',
           950: '#082f49',
         },
+        // Kinetic Brand System
+        kinetic: {
+          dark: '#050505',
+          orange: '#FF5F00',
+          green: '#00FF41',
+        },
+      },
+      fontFamily: {
+        mono: ['var(--font-mono)', 'JetBrains Mono', 'monospace'],
+        sans: ['Satoshi', 'system-ui', 'sans-serif'],
       },
     },
   },

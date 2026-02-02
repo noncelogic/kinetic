@@ -18,7 +18,7 @@ Most AI-generated code is throwaway. This boilerplate changes that by:
 - **Apps:** Next.js 15 (App Router, Server Components)
 - **API:** tRPC 11 + Zod validation
 - **Database:** Prisma + PostgreSQL
-- **Auth:** Clerk (swappable)
+- **Auth:** Planned (Clerk integration pending)
 - **UI:** Tailwind + shadcn/ui
 - **Testing:** Vitest + Testing Library
 
@@ -32,7 +32,6 @@ Most AI-generated code is throwaway. This boilerplate changes that by:
 │   ├── @repo/ui/         # Shared components
 │   ├── @repo/database/   # Prisma client + migrations
 │   ├── @repo/service/    # Business logic layer
-│   ├── @repo/auth/       # Auth utilities
 │   ├── @repo/entities/   # Shared types/schemas
 │   └── @repo/config/     # Shared configs (tsconfig, eslint)
 ├── CLAUDE.md             # Agent instructions (Claude)
@@ -69,6 +68,31 @@ pnpm test
 pnpm db:push
 pnpm db:generate
 ```
+
+## Deploy (Vercel) — `apps/web`
+
+This repo is a pnpm + Turborepo monorepo. The deployable prototype is the Next.js app in `apps/web`.
+
+### Option A (recommended): Set Vercel Root Directory
+
+1. Import the repo in Vercel.
+2. In **Project Settings → General → Root Directory**, set: `apps/web`
+3. Set environment variables (see below).
+4. Deploy.
+
+### Option B: Keep Root Directory at repo root
+
+A root `vercel.json` is included to point Vercel at `apps/web`.
+
+### Required environment variables
+
+- `DATABASE_URL` — PostgreSQL connection string used by Prisma.
+
+### Smoke test
+
+After deploy (or locally), the tRPC API route should respond:
+
+- `GET /api/trpc/health.ping` → `{ "result": { "data": { "json": { "ok": true }}}}`
 
 ## Philosophy
 

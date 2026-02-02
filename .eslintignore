@@ -1,0 +1,8 @@
+node_modules
+.next
+**/.next
+.turbo
+dist
+coverage
+apps/prototype/tailwindcss-*.log
+**/*.tsbuildinfo

@@ -24,3 +24,4 @@ export {
   SelectItem,
 } from './components/select';
 export { Tabs, TabsList, TabsTrigger, TabsContent } from './components/tabs';
+export { ResizablePanelGroup, ResizablePanel, ResizableHandle } from './components/resizable';

@@ -1,3 +1,6 @@
+// Concept Car Domain Schema
+// Supports: RBAC, approval workflow, immutable audit log, feedback capture
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -7,25 +10,257 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// ============================================================================
+// USERS & RBAC
+// ============================================================================
+
+enum Role {
+  VIEWER      // Read-only access
+  CONTRIBUTOR // Can create/edit assets
+  REVIEWER    // Can review and approve/reject
+  ADMIN       // Full access including user management
+}
+
 model User {
   id        String   @id @default(uuid())
   email     String   @unique
   name      String
+  role      Role     @default(VIEWER)
+  isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // Add your relations here
-  // posts Post[]
+  // Relations
+  ownedAssets      Asset[]         @relation("AssetOwner")
+  assignedAssets   Asset[]         @relation("AssetAssignee")
+  reviews          AssetReview[]
+  auditLogs        AuditLog[]      @relation("AuditActor")
+  feedback         Feedback[]
+  generationJobs   GenerationJob[]
+
+  @@index([email])
+  @@index([role])
 }
 
-// Add your models here
-// model Post {
-//   id        String   @id @default(uuid())
-//   title     String
-//   content   String?
-//   published Boolean  @default(false)
-//   authorId  String
-//   author    User     @relation(fields: [authorId], references: [id])
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-// }
+// ============================================================================
+// ASSETS & APPROVAL WORKFLOW
+// ============================================================================
+
+enum AssetStatus {
+  DRAFT           // Initial state, editable
+  PENDING_REVIEW  // Submitted for review
+  IN_REVIEW       // Reviewer has started review
+  APPROVED        // Approved, locked
+  REJECTED        // Rejected, can be revised
+  ARCHIVED        // Soft-deleted / retired
+}
+
+enum AssetType {
+  DESIGN          // Design concepts
+  SPECIFICATION   // Technical specs
+  PROTOTYPE       // Prototype definitions
+  DOCUMENTATION   // Supporting docs
+  MEDIA           // Audio/Video assets (Concept Car)
+}
+
+model Asset {
+  id          String       @id @default(uuid())
+  type        AssetType
+  title       String
+  description String?
+  content     Json?        // Flexible content storage
+  version     Int          @default(1)
+  status      AssetStatus  @default(DRAFT)
+  
+  // Ownership & Assignment
+  ownerId     String
+  owner       User         @relation("AssetOwner", fields: [ownerId], references: [id])
+  assigneeId  String?
+  assignee    User?        @relation("AssetAssignee", fields: [assigneeId], references: [id])
+  
+  // Timestamps
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  submittedAt DateTime?    // When submitted for review
+  reviewedAt  DateTime?    // When review completed
+  
+  // Relations
+  reviews     AssetReview[]
+  auditLogs   AuditLog[]
+  feedback    Feedback[]
+  generationJob GenerationJob?
+  
+  // Parent for versioning (optional - points to previous version)
+  parentId    String?
+  parent      Asset?       @relation("AssetVersions", fields: [parentId], references: [id])
+  versions    Asset[]      @relation("AssetVersions")
+
+  @@index([status])
+  @@index([ownerId])
+  @@index([type])
+  @@index([createdAt])
+}
+
+model AssetReview {
+  id         String       @id @default(uuid())
+  assetId    String
+  asset      Asset        @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  reviewerId String
+  reviewer   User         @relation(fields: [reviewerId], references: [id])
+  
+  decision   ReviewDecision
+  comments   String?
+  
+  createdAt  DateTime     @default(now())
+
+  @@index([assetId])
+  @@index([reviewerId])
+}
+
+enum ReviewDecision {
+  APPROVED
+  REJECTED
+  CHANGES_REQUESTED
+}
+
+// ============================================================================
+// IMMUTABLE AUDIT LOG (LEDGER)
+// ============================================================================
+
+enum AuditAction {
+  // Asset lifecycle
+  ASSET_CREATED
+  ASSET_UPDATED
+  ASSET_SUBMITTED
+  ASSET_REVIEWED
+  ASSET_APPROVED
+  ASSET_REJECTED
+  ASSET_ARCHIVED
+  ASSET_RESTORED
+  
+  // User actions
+  USER_CREATED
+  USER_UPDATED
+  USER_DEACTIVATED
+  USER_ROLE_CHANGED
+  
+  // System events
+  SYSTEM_EVENT
+}
+
+model AuditLog {
+  id          String      @id @default(uuid())
+  
+  // What happened
+  action      AuditAction
+  entityType  String      // e.g., "Asset", "User"
+  entityId    String      // ID of the affected entity
+  
+  // Who did it
+  actorId     String?
+  actor       User?       @relation("AuditActor", fields: [actorId], references: [id])
+  actorEmail  String?     // Denormalized for historical accuracy
+  
+  // Context
+  metadata    Json?       // Additional context (before/after values, etc.)
+  ipAddress   String?
+  userAgent   String?
+  
+  // Immutable timestamp
+  createdAt   DateTime    @default(now())
+
+  // Optional link to asset for easy querying
+  assetId     String?
+  asset       Asset?      @relation(fields: [assetId], references: [id], onDelete: SetNull)
+
+  @@index([entityType, entityId])
+  @@index([actorId])
+  @@index([action])
+  @@index([createdAt])
+  @@index([assetId])
+}
+
+// ============================================================================
+// FEEDBACK CAPTURE
+// ============================================================================
+
+enum FeedbackType {
+  GENERAL         // General feedback
+  BUG_REPORT      // Bug or issue
+  FEATURE_REQUEST // Feature suggestion
+  REVIEW_COMMENT  // Feedback on specific asset
+}
+
+enum FeedbackStatus {
+  NEW
+  ACKNOWLEDGED
+  IN_PROGRESS
+  RESOLVED
+  WONT_FIX
+}
+
+model Feedback {
+  id          String         @id @default(uuid())
+  type        FeedbackType   @default(GENERAL)
+  status      FeedbackStatus @default(NEW)
+  
+  // Content
+  title       String
+  description String
+  metadata    Json?          // Screenshots, context, etc.
+  
+  // Author
+  authorId    String?
+  author      User?          @relation(fields: [authorId], references: [id])
+  authorEmail String?        // For anonymous feedback
+  
+  // Optional asset reference
+  assetId     String?
+  asset       Asset?         @relation(fields: [assetId], references: [id], onDelete: SetNull)
+  
+  // Timestamps
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  resolvedAt  DateTime?
+
+  @@index([status])
+  @@index([type])
+  @@index([authorId])
+  @@index([assetId])
+  @@index([createdAt])
+}
+
+// ============================================================================
+// CONCEPT CAR: MEDIA GENERATOR & POLICY ENGINE
+// ============================================================================
+
+model GenerationJob {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  
+  prompt    String   // "Sci-Fi Track with synth bass"
+  status    String   // PENDING, PROCESSING, COMPLETED, FAILED
+  resultUrl String?  // URL to generated media
+  
+  // Link to resulting asset
+  assetId   String?  @unique
+  asset     Asset?   @relation(fields: [assetId], references: [id])
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PolicyRule {
+  id          String   @id @default(uuid())
+  title       String   // "Dual Approval Threshold"
+  description String   // "Transactions > $10k require 2 signatures"
+  
+  // The 'Code' side of the simulator
+  // Stored as a string to display in the UI's code block
+  zodSchema   String?  @db.Text 
+  
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
