@@ -339,7 +339,7 @@ export const assetRouter = router({
         });
       }
 
-      const validIds = assets.map((a) => a.id);
+      const validIds = assets.map((a: { id: string }) => a.id);
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const result = await ctx.prisma.$transaction(async (tx: any) => {
@@ -424,7 +424,7 @@ export const assetRouter = router({
         });
       }
 
-      const validIds = assets.map((a) => a.id);
+      const validIds = assets.map((a: { id: string }) => a.id);
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const result = await ctx.prisma.$transaction(async (tx: any) => {
