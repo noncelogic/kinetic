@@ -1,4 +1,4 @@
-import { db } from '@repo/database';
+import { prisma as db } from '@repo/database';
 import { z } from 'zod';
 
 export const GenerateMediaSchema = z.object({

@@ -47,6 +47,9 @@ importers:
       '@repo/service':
         specifier: workspace:*
         version: link:../../packages/service
+      '@repo/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
       '@tanstack/react-query':
         specifier: ^5.56.0
         version: 5.90.20(react@19.1.0)
@@ -62,6 +65,9 @@ importers:
       gray-matter:
         specifier: ^4.0.3
         version: 4.0.3
+      lucide-react:
+        specifier: ^0.454.0
+        version: 0.454.0(react@19.1.0)
       next:
         specifier: ^15.1.0
         version: 15.4.10(@opentelemetry/api@1.9.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)

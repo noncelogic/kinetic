@@ -29,7 +29,7 @@ export function simulatePolicyCheck(assetContent: any): PolicyResult[] {
     ruleId: '4.2',
     name: 'AI Disclosure',
     status: c2paCheck.success ? 'PASS' : 'FAIL',
-    message: c2paCheck.success ? undefined : c2paCheck.error.issues[0].message,
+    message: c2paCheck.success ? undefined : c2paCheck.error?.issues[0]?.message,
     schemaCode: `z.object({ c2pa: z.boolean().refine(val => val === true) })`
   });
 
@@ -39,7 +39,7 @@ export function simulatePolicyCheck(assetContent: any): PolicyResult[] {
     ruleId: '1.1',
     name: 'Audio Safety',
     status: safetyCheck.success ? 'PASS' : 'FAIL',
-    message: safetyCheck.success ? undefined : safetyCheck.error.issues[0].message,
+    message: safetyCheck.success ? undefined : safetyCheck.error?.issues[0]?.message,
     schemaCode: `z.object({ piiDetected: z.boolean().refine(val => val === false) })`
   });
 

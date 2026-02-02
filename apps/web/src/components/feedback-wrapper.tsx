@@ -1,11 +1,10 @@
 'use client';
 
-import { FeedbackWidget } from '@repo/feedback/widget';
+import { FeedbackWidget } from '@repo/feedback';
 
 export function FeedbackWrapper() {
   return (
     <FeedbackWidget
-      projectId="kinetic-v1"
       onSubmit={async (data) => {
         // TODO: Wire to tRPC mutation
         console.log('Feedback submitted:', data);

@@ -17,13 +17,15 @@ import { useState } from 'react';
 
 export default function MediaBankPage() {
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
+  const [prompt, setPrompt] = useState('');
+  const utils = trpc.useUtils();
   
   // Polling for jobs
   const jobsQuery = trpc.media.listJobs.useQuery(undefined, {
     refetchInterval: 1000,
   });
 
-  const selectedJob = jobsQuery.data?.find(j => j.id === selectedJobId);
+  const selectedJob = jobsQuery.data?.find((j: any) => j.id === selectedJobId);
   const policyQuery = trpc.media.checkPolicy.useQuery(
     { assetId: selectedJob?.assetId! },
     { enabled: !!selectedJob?.assetId }
@@ -60,7 +62,7 @@ export default function MediaBankPage() {
       </div>
 
       <div className="flex-1 border rounded-lg overflow-hidden bg-background">
-        <ResizablePanelGroup direction="horizontal">
+        <ResizablePanelGroup orientation="horizontal">
           
           {/* LEFT: Generator */}
           <ResizablePanel defaultSize={20} minSize={15} maxSize={30}>
@@ -99,7 +101,7 @@ export default function MediaBankPage() {
           <ResizablePanel defaultSize={50}>
             <div className="h-full p-4 overflow-auto">
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {jobsQuery.data?.map((job) => (
+                {jobsQuery.data?.map((job: any) => (
                   <Card 
                     key={job.id} 
                     className={`group cursor-pointer transition-colors ${selectedJobId === job.id ? 'border-primary ring-1 ring-primary' : 'hover:border-primary'}`}
@@ -156,7 +158,7 @@ export default function MediaBankPage() {
               ) : policyQuery.isLoading ? (
                  <div className="text-xs text-muted-foreground text-center py-10">Running Policy Engine...</div>
               ) : (
-                policyQuery.data?.map((rule) => (
+                policyQuery.data?.map((rule: any) => (
                   <Card key={rule.ruleId} className={rule.status === 'FAIL' ? 'border-red-500/20 bg-red-500/5' : 'border-green-500/20 bg-green-500/5'}>
                     <CardHeader className="pb-2">
                       <CardTitle className="text-sm">Policy {rule.ruleId}: {rule.name}</CardTitle>

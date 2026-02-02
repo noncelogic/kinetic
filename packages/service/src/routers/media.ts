@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { router, publicProcedure } from '../trpc';
 import { generateMediaAsset, GenerateMediaSchema } from '../media/generator';
 import { simulatePolicyCheck } from '../services/policy';
-import { db } from '@repo/database';
+import { prisma as db } from '@repo/database';
 
 export const mediaRouter = router({
   generate: publicProcedure
