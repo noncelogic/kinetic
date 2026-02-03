@@ -2,8 +2,12 @@ import Link from 'next/link';
 import type { ReactElement } from 'react';
 import { ShieldCheck, Zap, Lock, Database, Code, CheckCircle } from 'lucide-react';
 import { Button } from '@repo/ui';
+import { UserNav } from '@/components/user-nav';
+import { auth } from '@/auth';
 
-export default function Home(): ReactElement {
+export default async function Home(): Promise<ReactElement> {
+  const session = await auth();
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Nav */}
@@ -22,11 +26,7 @@ export default function Home(): ReactElement {
             <Link href="#tech-stack" className="text-sm font-medium text-muted-foreground hover:text-foreground transition">
               Stack
             </Link>
-            <Link href="/media">
-              <Button size="sm">
-                Launch Concept Car
-              </Button>
-            </Link>
+            <UserNav />
           </div>
         </div>
       </nav>
@@ -53,11 +53,23 @@ export default function Home(): ReactElement {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-            <Link href="/media">
-              <Button size="lg" className="h-12 px-8 text-base shadow-lg shadow-primary/25">
-                Try the Demo
-              </Button>
-            </Link>
+            {session ? (
+              <Link href="/media">
+                <Button size="lg" className="h-12 px-8 text-base shadow-lg shadow-primary/25">
+                  Launch Dashboard
+                </Button>
+              </Link>
+            ) : (
+              <form action={async () => {
+                'use server';
+                const { signIn } = await import('@/auth');
+                await signIn('google', { redirectTo: '/media' });
+              }}>
+                <Button type="submit" size="lg" className="h-12 px-8 text-base shadow-lg shadow-primary/25">
+                  Sign In with Google
+                </Button>
+              </form>
+            )}
             <Link href="https://github.com/noncelogic/boilerplate" target="_blank">
               <Button variant="outline" size="lg" className="h-12 px-8 text-base">
                 View on GitHub
