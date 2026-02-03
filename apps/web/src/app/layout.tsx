@@ -1,4 +1,3 @@
-import { ClerkProvider } from '@clerk/nextjs'
 import { Inter } from 'next/font/google';
 
 import type { Metadata } from 'next';
@@ -26,15 +25,13 @@ export default function RootLayout({
   children: ReactNode;
 }>): ReactElement {
   return (
-    <ClerkProvider>
-      <html lang="en">
-        <body className={inter.className}>
-          <TRPCProvider>
-            {children}
-            <FeedbackWrapper />
-          </TRPCProvider>
-        </body>
-      </html>
-    </ClerkProvider>
+    <html lang="en">
+      <body className={inter.className}>
+        <TRPCProvider>
+          {children}
+          <FeedbackWrapper />
+        </TRPCProvider>
+      </body>
+    </html>
   );
 }
