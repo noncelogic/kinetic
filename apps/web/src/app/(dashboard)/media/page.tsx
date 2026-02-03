@@ -227,36 +227,94 @@ export default function MediaBankPage() {
 
           {/* RIGHT: Policy Simulator */}
           <ResizablePanel defaultSize={30} minSize={20}>
-            <div className="h-full p-4 border-l bg-muted/10 space-y-4">
-              <div className="flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4 text-amber-500" />
-                <h3 className="font-semibold text-sm uppercase">Compliance Audit</h3>
+            <div className="h-full flex flex-col bg-muted/10 border-l">
+              <div className="p-4 border-b bg-background/50 backdrop-blur-sm">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <ShieldCheck className="w-4 h-4 text-primary" />
+                    <h3 className="font-semibold text-sm">Policy Engine</h3>
+                  </div>
+                  <Badge variant="outline" className="font-mono text-[10px] uppercase">
+                    v1.0.2 Active
+                  </Badge>
+                </div>
               </div>
               
-              {!selectedJob ? (
-                <div className="text-xs text-muted-foreground text-center py-10">Select an asset to audit</div>
-              ) : policyQuery.isLoading ? (
-                 <div className="text-xs text-muted-foreground text-center py-10">Running Policy Engine...</div>
-              ) : (
-                policyQuery.data?.map((rule: any) => (
-                  <Card key={rule.ruleId} className={rule.status === 'FAIL' ? 'border-red-500/20 bg-red-500/5' : 'border-green-500/20 bg-green-500/5'}>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-sm">Policy {rule.ruleId}: {rule.name}</CardTitle>
-                    </CardHeader>
-                    <CardContent className="text-xs space-y-2">
-                      <p className="text-muted-foreground">{rule.message || "Compliance check passed."}</p>
-                      <div className="bg-black/80 text-green-400 p-2 rounded font-mono text-[10px]">
-                        {rule.schemaCode}
-                      </div>
-                      <div className={`flex items-center gap-2 pt-2 ${rule.status === 'FAIL' ? 'text-red-500' : 'text-green-500'}`}>
-                        <span className={`w-2 h-2 rounded-full ${rule.status === 'FAIL' ? 'bg-red-500' : 'bg-green-500'}`} />
-                        {rule.status === 'FAIL' ? 'Failed' : 'Passed'}
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))
-              )}
+              <div className="flex-1 overflow-auto p-4 space-y-4">
+                {!selectedJob ? (
+                  <div className="h-full flex flex-col items-center justify-center text-center space-y-3 opacity-50">
+                    <ShieldCheck className="w-12 h-12 text-muted-foreground/50" />
+                    <p className="text-sm text-muted-foreground">Select an asset to inspect compliance chain.</p>
+                  </div>
+                ) : policyQuery.isLoading ? (
+                   <div className="space-y-4 animate-pulse">
+                     {[1, 2, 3].map(i => (
+                       <div key={i} className="h-24 rounded-lg bg-muted/50" />
+                     ))}
+                   </div>
+                ) : (
+                  <div className="space-y-4">
+                    {policyQuery.data?.map((rule: any, i: number) => (
+                      <div 
+                        key={rule.ruleId} 
+                        className={`group relative overflow-hidden rounded-lg border bg-background transition-all duration-500 animate-in slide-in-from-bottom-2 fade-in`}
+                        style={{ animationDelay: `${i * 150}ms` }}
+                      >
+                        {/* Status Bar */}
+                        <div className={`absolute left-0 top-0 bottom-0 w-1 ${rule.status === 'FAIL' ? 'bg-red-500' : 'bg-green-500'}`} />
+                        
+                        <div className="p-4 pl-5">
+                          <div className="flex items-center justify-between mb-2">
+                            <h4 className="text-sm font-medium flex items-center gap-2">
+                              <span className="font-mono text-xs text-muted-foreground opacity-70">{rule.ruleId}</span>
+                              {rule.name}
+                            </h4>
+                            {rule.status === 'PASS' ? (
+                              <div className="text-green-500 flex items-center gap-1">
+                                <span className="text-[10px] font-bold">PASS</span>
+                                <CheckCircle className="w-4 h-4" />
+                              </div>
+                            ) : (
+                              <div className="text-red-500 flex items-center gap-1">
+                                <span className="text-[10px] font-bold">FAIL</span>
+                                <AlertTriangle className="w-4 h-4" />
+                              </div>
+                            )}
+                          </div>
+                          
+                          {/* Code Block Visual */}
+                          <div className="relative mt-3 rounded-md bg-zinc-950 p-3 font-mono text-[10px] text-zinc-400 overflow-hidden">
+                            <div className="absolute top-2 right-2 flex gap-1">
+                              <div className="w-2 h-2 rounded-full bg-zinc-800" />
+                              <div className="w-2 h-2 rounded-full bg-zinc-800" />
+                            </div>
+                            <pre className="overflow-x-auto">
+                              <code>
+                                <span className="text-purple-400">z</span>.object({'{'}{'\n'}
+                                {'  '}c2pa: <span className="text-yellow-400">z.boolean()</span>.refine(<span className="text-blue-400">val</span> {`=>`} val === <span className="text-red-400">true</span>){'\n'}
+                                {'}'})
+                              </code>
+                            </pre>
+                            {/* Scanning line effect */}
+                            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-green-500/10 to-transparent h-[200%] w-full animate-[scan_2s_ease-in-out_infinite]" />
+                          </div>
 
+                          <div className="mt-3 flex items-center gap-2 text-xs">
+                            <span className={`font-medium ${rule.status === 'FAIL' ? 'text-red-500' : 'text-green-600'}`}>
+                              {rule.status === 'FAIL' ? 'VIOLATION DETECTED' : 'COMPLIANT'}
+                            </span>
+                            {rule.message && (
+                              <span className="text-muted-foreground border-l pl-2 ml-auto truncate max-w-[150px]">
+                                {rule.message}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </ResizablePanel>
 
