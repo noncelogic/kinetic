@@ -9,15 +9,25 @@ import {
   CardTitle,
   CardContent,
   Button,
-  Badge
+  Badge,
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent
 } from '@repo/ui';
-import { Play, ShieldCheck, AlertTriangle, Loader2 } from 'lucide-react';
+import { Play, ShieldCheck, AlertTriangle, Loader2, UploadCloud, Sliders } from 'lucide-react';
 import { trpc } from '@/trpc/client';
 import { useState } from 'react';
+import { UploadDropzone } from '@/utils/uploadthing';
+import { useSession } from 'next-auth/react';
 
 export default function MediaBankPage() {
+  const { data: session } = useSession();
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
   const [prompt, setPrompt] = useState('');
+  const [duration, setDuration] = useState(30);
+  const [aspectRatio, setAspectRatio] = useState('16:9');
+  
   const utils = trpc.useUtils();
   
   // Polling for jobs
@@ -39,10 +49,11 @@ export default function MediaBankPage() {
   });
 
   const handleGenerate = () => {
-    // Hardcoded User ID for Concept Car Demo
+    if (!session?.user?.id) return;
+    
     generateMutation.mutate({
       prompt,
-      userId: 'demo-user-1', 
+      userId: session.user.id, 
     });
   };
 
@@ -65,33 +76,102 @@ export default function MediaBankPage() {
         <ResizablePanelGroup orientation="horizontal">
           
           {/* LEFT: Generator */}
-          <ResizablePanel defaultSize={20} minSize={15} maxSize={30}>
-            <div className="h-full p-4 border-r space-y-4">
-              <h3 className="font-semibold text-sm uppercase text-muted-foreground">Generator</h3>
-              <div className="space-y-4">
-                <div className="p-3 border rounded-md bg-muted/50">
-                  <label className="text-xs font-medium">Prompt</label>
-                  <textarea 
-                    className="w-full mt-2 bg-transparent text-sm resize-none focus:outline-none"
-                    rows={4}
-                    placeholder="Describe the track..." 
-                    value={prompt}
-                    onChange={(e) => setPrompt(e.target.value)}
-                  />
+          <ResizablePanel defaultSize={25} minSize={20} maxSize={35}>
+            <div className="h-full border-r bg-muted/10">
+              <Tabs defaultValue="generate" className="h-full flex flex-col">
+                <div className="px-4 pt-4">
+                  <TabsList className="w-full">
+                    <TabsTrigger value="generate" className="flex-1">Generate</TabsTrigger>
+                    <TabsTrigger value="remix" className="flex-1">Remix</TabsTrigger>
+                  </TabsList>
                 </div>
-                <Button 
-                  className="w-full" 
-                  onClick={handleGenerate}
-                  disabled={!prompt || generateMutation.isPending}
-                >
-                  {generateMutation.isPending ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Generating...
-                    </>
-                  ) : 'Generate Asset'}
-                </Button>
-              </div>
+
+                <TabsContent value="generate" className="flex-1 p-4 space-y-6">
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <label className="text-xs font-medium uppercase text-muted-foreground">Prompt</label>
+                      <textarea 
+                        className="w-full p-3 rounded-md border bg-background text-sm resize-none focus:outline-none focus:ring-1 focus:ring-primary"
+                        rows={4}
+                        placeholder="Describe the track..." 
+                        value={prompt}
+                        onChange={(e) => setPrompt(e.target.value)}
+                      />
+                    </div>
+
+                    <div className="space-y-4 pt-4 border-t">
+                      <div className="flex items-center justify-between">
+                        <label className="text-xs font-medium flex items-center gap-2">
+                          <Sliders className="w-3 h-3" /> Duration
+                        </label>
+                        <span className="text-xs text-muted-foreground">{duration}s</span>
+                      </div>
+                      <input 
+                        type="range" 
+                        min="15" 
+                        max="120" 
+                        step="15" 
+                        value={duration}
+                        onChange={(e) => setDuration(parseInt(e.target.value))}
+                        className="w-full h-1 bg-muted rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-xs font-medium">Aspect Ratio (Cover Art)</label>
+                      <div className="grid grid-cols-3 gap-2">
+                        {['16:9', '1:1', '9:16'].map((ratio) => (
+                          <button
+                            key={ratio}
+                            onClick={() => setAspectRatio(ratio)}
+                            className={`text-xs py-1 px-2 rounded border ${aspectRatio === ratio ? 'bg-primary text-primary-foreground border-primary' : 'bg-background hover:bg-muted'}`}
+                          >
+                            {ratio}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <Button 
+                    className="w-full" 
+                    onClick={handleGenerate}
+                    disabled={!prompt || generateMutation.isPending || !session}
+                  >
+                    {generateMutation.isPending ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Generating...
+                      </>
+                    ) : session ? 'Generate Asset' : 'Sign In to Generate'}
+                  </Button>
+                </TabsContent>
+
+                <TabsContent value="remix" className="flex-1 p-4">
+                  <div className="h-full flex flex-col space-y-4">
+                    <div className="rounded-lg border border-dashed p-4 text-center">
+                      <UploadDropzone
+                        endpoint="mediaUploader"
+                        onClientUploadComplete={(res) => {
+                          console.log("Files: ", res);
+                          // TODO: Trigger Remix Mutation
+                        }}
+                        onUploadError={(error: Error) => {
+                          alert(`ERROR! ${error.message}`);
+                        }}
+                        appearance={{
+                          button: "bg-primary text-primary-foreground text-xs px-2 py-1",
+                          container: "flex flex-col items-center justify-center gap-2",
+                          label: "text-xs text-muted-foreground hover:text-primary transition-colors"
+                        }}
+                      />
+                    </div>
+                    <p className="text-xs text-muted-foreground text-center">
+                      Upload an audio file or image to use as a reference for style transfer.
+                    </p>
+                  </div>
+                </TabsContent>
+              </Tabs>
             </div>
           </ResizablePanel>
 
