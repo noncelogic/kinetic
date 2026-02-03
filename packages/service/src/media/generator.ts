@@ -4,6 +4,8 @@ import { z } from 'zod';
 export const GenerateMediaSchema = z.object({
   prompt: z.string().min(3),
   userId: z.string(),
+  duration: z.number().optional().default(30),
+  aspectRatio: z.string().optional().default('16:9'),
 });
 
 export async function generateMediaAsset(input: z.infer<typeof GenerateMediaSchema>) {
@@ -13,6 +15,8 @@ export async function generateMediaAsset(input: z.infer<typeof GenerateMediaSche
       userId: input.userId,
       prompt: input.prompt,
       status: 'PROCESSING',
+      duration: input.duration,
+      aspectRatio: input.aspectRatio,
     },
   });
 
@@ -23,7 +27,11 @@ export async function generateMediaAsset(input: z.infer<typeof GenerateMediaSche
       entityType: 'GenerationJob',
       entityId: job.id,
       actorId: input.userId,
-      metadata: { prompt: input.prompt },
+      metadata: { 
+        prompt: input.prompt,
+        duration: input.duration,
+        aspectRatio: input.aspectRatio
+      },
     },
   });
 

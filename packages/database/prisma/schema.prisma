@@ -284,6 +284,10 @@ model GenerationJob {
   status    String   // PENDING, PROCESSING, COMPLETED, FAILED
   resultUrl String?  // URL to generated media
   
+  // Settings
+  duration    Int?     @default(30)
+  aspectRatio String?  @default("16:9")
+  
   // Link to resulting asset
   assetId   String?  @unique
   asset     Asset?   @relation(fields: [assetId], references: [id])
