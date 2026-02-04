@@ -1,0 +1,10 @@
+# Playwright artifacts
+output/
+playwright-report/
+test-results/
+
+# Generated screenshots (regenerate with pnpm capture)
+screenshots/
+
+# Dependencies
+node_modules/
