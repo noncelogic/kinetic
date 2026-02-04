@@ -99,6 +99,7 @@ export default tseslint.config(
       "**/vitest.config.ts",
       "**/seed-user.ts",
       "eslint.config.mjs",
+      "**/e2e/**",
     ],
   }
 );

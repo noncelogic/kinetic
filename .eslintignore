@@ -11,3 +11,4 @@ apps/prototype/tailwindcss-*.log
 *.mjs
 *.cjs
 !eslint.config.*
+**/e2e

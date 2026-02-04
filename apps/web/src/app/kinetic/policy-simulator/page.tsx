@@ -196,15 +196,16 @@ export default function PolicySimulatorPage(): ReactElement {
     setResult(null);
 
     // Create a transaction that violates the policy
+    const requesterId = crypto.randomUUID();
     const violatingTransaction = {
       id: crypto.randomUUID(),
       amount: 15_000, // Above threshold
       currency: 'USD' as const,
       description: 'Equipment purchase - urgent',
-      requestedBy: 'user-001-uuid-here-1234',
+      requestedBy: requesterId,
       approvals: [
         {
-          id: 'approver-001-uuid-here',
+          id: crypto.randomUUID(),
           name: 'Alice Manager',
           role: 'manager' as const,
           approvedAt: new Date().toISOString(),
@@ -266,21 +267,22 @@ export default function PolicySimulatorPage(): ReactElement {
     setIsAnimating(true);
     setResult(null);
 
+    const requesterId = crypto.randomUUID();
     const compliantTransaction = {
       id: crypto.randomUUID(),
       amount: 15_000,
       currency: 'USD' as const,
       description: 'Equipment purchase - approved',
-      requestedBy: 'user-001-uuid-here-1234',
+      requestedBy: requesterId,
       approvals: [
         {
-          id: 'approver-001-uuid-here',
+          id: crypto.randomUUID(),
           name: 'Alice Manager',
           role: 'manager' as const,
           approvedAt: new Date().toISOString(),
         },
         {
-          id: 'approver-002-uuid-here',
+          id: crypto.randomUUID(),
           name: 'Bob Director',
           role: 'admin' as const,
           approvedAt: new Date().toISOString(),
