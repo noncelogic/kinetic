@@ -32,8 +32,7 @@ interface Route {
 
 const ROUTES: Route[] = [
   { name: 'landing', path: '/', delay: 1000 },
-  { name: 'kinetic-demo', path: '/kinetic', delay: 1000 },
-  { name: 'policy-simulator', path: '/kinetic/policy-simulator', delay: 1500 },
+  { name: 'kinetic-demo', path: '/kinetic', delay: 2000 },
   { name: 'showroom', path: '/showroom', delay: 1000 },
 ];
 
@@ -42,21 +41,17 @@ test.describe('Kinetic Boilerplate Screenshots', () => {
     test(`capture ${route.name}`, async ({ page }) => {
       const url = route.path;
 
-      // Navigate with domcontentloaded
       await page.goto(url, {
         waitUntil: 'domcontentloaded',
         timeout: 30000,
       });
 
-      // Wait for page to be fully interactive
       await page.waitForLoadState('load');
 
-      // Optional: wait for specific selector if defined
       if (route.waitFor) {
         await page.waitForSelector(route.waitFor, { timeout: 30000 });
       }
 
-      // Wait for custom delay or allow animations to settle
       if (route.delay) {
         await page.waitForTimeout(route.delay);
       } else {
@@ -70,10 +65,75 @@ test.describe('Kinetic Boilerplate Screenshots', () => {
         fullPage: true,
       });
 
-      // Verify screenshot was created
       expect(fs.existsSync(screenshotPath)).toBe(true);
 
       console.warn(`✓ Captured: ${route.name}`);
     });
   }
+});
+
+/**
+ * Policy Simulator Flow - captures multiple states of the interactive demo
+ */
+test.describe('Policy Simulator Flow', () => {
+  test('capture initial state', async ({ page }) => {
+    await page.goto('/kinetic/policy-simulator', {
+      waitUntil: 'domcontentloaded',
+      timeout: 30000,
+    });
+
+    await page.waitForLoadState('load');
+    await page.waitForTimeout(1500);
+
+    const screenshotPath = path.join(OUTPUT_DIR, 'policy-simulator-01-initial.png');
+    await page.screenshot({ path: screenshotPath, fullPage: true });
+    expect(fs.existsSync(screenshotPath)).toBe(true);
+    console.warn('✓ Captured: policy-simulator-01-initial');
+  });
+
+  test('capture violation state', async ({ page }) => {
+    await page.goto('/kinetic/policy-simulator', {
+      waitUntil: 'domcontentloaded',
+      timeout: 30000,
+    });
+
+    await page.waitForLoadState('load');
+    await page.waitForTimeout(1000);
+
+    // Click the "Violate Policy" button
+    const violateButton = page.getByRole('button', {
+      name: /Violate Policy/i,
+    });
+    await violateButton.click();
+
+    // Wait for the result to appear
+    await page.waitForTimeout(1500);
+
+    const screenshotPath = path.join(OUTPUT_DIR, 'policy-simulator-02-violation.png');
+    await page.screenshot({ path: screenshotPath, fullPage: true });
+    expect(fs.existsSync(screenshotPath)).toBe(true);
+    console.warn('✓ Captured: policy-simulator-02-violation');
+  });
+
+  test('capture compliant state', async ({ page }) => {
+    await page.goto('/kinetic/policy-simulator', {
+      waitUntil: 'domcontentloaded',
+      timeout: 30000,
+    });
+
+    await page.waitForLoadState('load');
+    await page.waitForTimeout(1000);
+
+    // Click the "Comply" button
+    const complyButton = page.getByRole('button', { name: /Comply/i });
+    await complyButton.click();
+
+    // Wait for the result to appear
+    await page.waitForTimeout(1500);
+
+    const screenshotPath = path.join(OUTPUT_DIR, 'policy-simulator-03-compliant.png');
+    await page.screenshot({ path: screenshotPath, fullPage: true });
+    expect(fs.existsSync(screenshotPath)).toBe(true);
+    console.warn('✓ Captured: policy-simulator-03-compliant');
+  });
 });
