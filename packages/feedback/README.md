@@ -69,7 +69,7 @@ import { useFeedback } from '@repo/feedback';
 
 function MyComponent() {
   const { submitFeedback, config } = useFeedback();
-  
+
   const handleCustomFeedback = async () => {
     await submitFeedback({
       type: 'feature',
@@ -87,18 +87,18 @@ function MyComponent() {
 
 ### FeedbackWidgetConfig
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `endpoint` | `string` | required | API endpoint for submissions |
-| `projectId` | `string` | required | Project identifier |
-| `position` | `'bottom-right' \| 'bottom-left' \| 'top-right' \| 'top-left'` | `'bottom-right'` | Widget position |
-| `accentColor` | `string` | `'#6366f1'` | Primary color |
-| `enableScreenshot` | `boolean` | `false` | Enable screenshot capture |
-| `captureConsoleErrors` | `boolean` | `false` | Capture console errors |
-| `labels` | `object` | `{}` | Custom UI labels |
-| `user` | `{ id?, email?, name? }` | `undefined` | Pre-fill user info |
-| `onSuccess` | `(feedback) => void` | `undefined` | Success callback |
-| `onError` | `(error) => void` | `undefined` | Error callback |
+| Prop                   | Type                                                           | Default          | Description                  |
+| ---------------------- | -------------------------------------------------------------- | ---------------- | ---------------------------- |
+| `endpoint`             | `string`                                                       | required         | API endpoint for submissions |
+| `projectId`            | `string`                                                       | required         | Project identifier           |
+| `position`             | `'bottom-right' \| 'bottom-left' \| 'top-right' \| 'top-left'` | `'bottom-right'` | Widget position              |
+| `accentColor`          | `string`                                                       | `'#6366f1'`      | Primary color                |
+| `enableScreenshot`     | `boolean`                                                      | `false`          | Enable screenshot capture    |
+| `captureConsoleErrors` | `boolean`                                                      | `false`          | Capture console errors       |
+| `labels`               | `object`                                                       | `{}`             | Custom UI labels             |
+| `user`                 | `{ id?, email?, name? }`                                       | `undefined`      | Pre-fill user info           |
+| `onSuccess`            | `(feedback) => void`                                           | `undefined`      | Success callback             |
+| `onError`              | `(error) => void`                                              | `undefined`      | Error callback               |
 
 ### FeedbackSubmission
 
@@ -132,7 +132,7 @@ model Feedback {
   resolvedAt  DateTime?
   assignedTo  String?
   tags        String[]
-  
+
   @@index([projectId, status])
   @@index([createdAt])
 }

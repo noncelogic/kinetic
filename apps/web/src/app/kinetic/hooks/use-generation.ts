@@ -1,6 +1,6 @@
 /**
  * React Hook for Mock AI Generation Service
- * 
+ *
  * Provides a clean interface for components to trigger AI generation
  * with financial simulation toasts.
  */
@@ -33,31 +33,31 @@ export interface UseGenerationOptions {
 export interface UseGenerationReturn {
   /** Current generation status */
   status: 'idle' | 'generating' | 'completed' | 'error';
-  
+
   /** Current simulation step (null when not generating) */
   currentStep: SimulationStep | null;
-  
+
   /** Current step index (0-based) */
   stepIndex: number;
-  
+
   /** Total number of steps */
   totalSteps: number;
-  
+
   /** Progress percentage (0-100) */
   progress: number;
-  
+
   /** Generated result (null until complete) */
   result: GenerationResult | null;
-  
+
   /** Error message if generation failed */
   error: string | null;
-  
+
   /** Start generation with the given prompt */
   generate: (request: GenerationRequest) => Promise<GenerationResult>;
-  
+
   /** Reset state to idle */
   reset: () => void;
-  
+
   /** All simulation steps for reference */
   steps: SimulationStep[];
 }
@@ -74,53 +74,61 @@ export function useGeneration(options: UseGenerationOptions = {}): UseGeneration
   const [error, setError] = useState<string | null>(null);
 
   const totalSteps = SIMULATION_STEPS.length;
-  const progress = status === 'completed' ? 100 : status === 'generating' ? Math.round(((stepIndex + 1) / totalSteps) * 100) : 0;
+  const progress =
+    status === 'completed'
+      ? 100
+      : status === 'generating'
+        ? Math.round(((stepIndex + 1) / totalSteps) * 100)
+        : 0;
 
-  const generate = useCallback(async (request: GenerationRequest): Promise<GenerationResult> => {
-    setStatus('generating');
-    setCurrentStep(null);
-    setStepIndex(0);
-    setResult(null);
-    setError(null);
-
-    try {
-      const genResult = await generateAssets({
-        ...request,
-        onStepProgress: (step, idx, total) => {
-          setCurrentStep(step);
-          setStepIndex(idx);
-          
-          options.onStepStart?.(step, idx, total);
-          
-          // Also call the request's callback if provided
-          request.onStepProgress?.(step, idx, total);
-        },
-        onAssetReady: (asset) => {
-          options.onAssetReady?.(asset);
-          request.onAssetReady?.(asset);
-        },
-      });
-
-      setResult(genResult);
-      setStatus('completed');
+  const generate = useCallback(
+    async (request: GenerationRequest): Promise<GenerationResult> => {
+      setStatus('generating');
       setCurrentStep(null);
-      
-      options.onComplete?.(genResult);
-      
-      return genResult;
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Generation failed';
-      setError(errorMessage);
-      setStatus('error');
-      setCurrentStep(null);
-      
-      if (err instanceof Error) {
-        options.onError?.(err);
+      setStepIndex(0);
+      setResult(null);
+      setError(null);
+
+      try {
+        const genResult = await generateAssets({
+          ...request,
+          onStepProgress: (step, idx, total) => {
+            setCurrentStep(step);
+            setStepIndex(idx);
+
+            options.onStepStart?.(step, idx, total);
+
+            // Also call the request's callback if provided
+            request.onStepProgress?.(step, idx, total);
+          },
+          onAssetReady: (asset) => {
+            options.onAssetReady?.(asset);
+            request.onAssetReady?.(asset);
+          },
+        });
+
+        setResult(genResult);
+        setStatus('completed');
+        setCurrentStep(null);
+
+        options.onComplete?.(genResult);
+
+        return genResult;
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : 'Generation failed';
+        setError(errorMessage);
+        setStatus('error');
+        setCurrentStep(null);
+
+        if (err instanceof Error) {
+          options.onError?.(err);
+        }
+
+        throw err;
       }
-      
-      throw err;
-    }
-  }, [options]);
+    },
+    [options]
+  );
 
   const reset = useCallback(() => {
     setStatus('idle');
@@ -164,11 +172,11 @@ export const TOAST_MESSAGES = {
     title: 'MPC Key Generation',
     description: 'Generating distributed key shares for secure signing',
   },
-  'broadcast': {
+  broadcast: {
     title: 'Broadcasting Transaction',
     description: 'Propagating signed transaction to settlement network',
   },
-  'finalization': {
+  finalization: {
     title: 'Transaction Finalized',
     description: 'Asset generation confirmed with cryptographic proof',
   },

@@ -346,7 +346,9 @@ export default function PolicySimulatorPage(): ReactElement {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-6 py-8">
         {/* Split View */}
-        <div className={`grid gap-6 ${showCode ? 'lg:grid-cols-2' : 'lg:grid-cols-1 max-w-3xl mx-auto'}`}>
+        <div
+          className={`grid gap-6 ${showCode ? 'lg:grid-cols-2' : 'lg:grid-cols-1 max-w-3xl mx-auto'}`}
+        >
           {/* Left Panel: Policy Text */}
           <div className="bg-slate-800/50 rounded-2xl border border-slate-700/50 overflow-hidden">
             <div className="px-6 py-4 border-b border-slate-700/50 flex items-center justify-between">
@@ -377,9 +379,11 @@ export default function PolicySimulatorPage(): ReactElement {
                       key={index}
                       className={`
                         px-3 py-0.5 -mx-3 rounded transition-all duration-500
-                        ${isHighlighted 
-                          ? 'bg-red-500/30 border-l-4 border-red-500 animate-pulse' 
-                          : ''}
+                        ${
+                          isHighlighted
+                            ? 'bg-red-500/30 border-l-4 border-red-500 animate-pulse'
+                            : ''
+                        }
                         ${textColorClass}
                       `}
                     >
@@ -428,16 +432,30 @@ export default function PolicySimulatorPage(): ReactElement {
                 disabled={isAnimating}
                 className={`
                   px-6 py-3 rounded-xl font-medium transition-all duration-300
-                  ${isAnimating 
-                    ? 'bg-slate-700 text-slate-400 cursor-not-allowed' 
-                    : 'bg-gradient-to-r from-red-500 to-orange-500 text-white hover:shadow-lg hover:shadow-red-500/25 hover:scale-105'}
+                  ${
+                    isAnimating
+                      ? 'bg-slate-700 text-slate-400 cursor-not-allowed'
+                      : 'bg-gradient-to-r from-red-500 to-orange-500 text-white hover:shadow-lg hover:shadow-red-500/25 hover:scale-105'
+                  }
                 `}
               >
                 {isAnimating ? (
                   <span className="flex items-center gap-2">
                     <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                        fill="none"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      />
                     </svg>
                     Processing...
                   </span>
@@ -450,9 +468,11 @@ export default function PolicySimulatorPage(): ReactElement {
                 disabled={isAnimating}
                 className={`
                   px-6 py-3 rounded-xl font-medium transition-all duration-300
-                  ${isAnimating 
-                    ? 'bg-slate-700 text-slate-400 cursor-not-allowed' 
-                    : 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white hover:shadow-lg hover:shadow-emerald-500/25 hover:scale-105'}
+                  ${
+                    isAnimating
+                      ? 'bg-slate-700 text-slate-400 cursor-not-allowed'
+                      : 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white hover:shadow-lg hover:shadow-emerald-500/25 hover:scale-105'
+                  }
                 `}
               >
                 ✓ Comply (2 approvals)
@@ -474,30 +494,39 @@ export default function PolicySimulatorPage(): ReactElement {
           <div
             className={`
               mt-6 rounded-2xl border overflow-hidden transition-all duration-500 animate-in slide-in-from-bottom-4
-              ${result.success 
-                ? 'bg-emerald-500/10 border-emerald-500/30' 
-                : 'bg-red-500/10 border-red-500/30'}
+              ${
+                result.success
+                  ? 'bg-emerald-500/10 border-emerald-500/30'
+                  : 'bg-red-500/10 border-red-500/30'
+              }
             `}
           >
-            <div className={`px-6 py-4 border-b ${result.success ? 'border-emerald-500/30' : 'border-red-500/30'}`}>
+            <div
+              className={`px-6 py-4 border-b ${result.success ? 'border-emerald-500/30' : 'border-red-500/30'}`}
+            >
               <div className="flex items-center gap-3">
-                <div className={`
+                <div
+                  className={`
                   w-10 h-10 rounded-full flex items-center justify-center text-2xl
                   ${result.success ? 'bg-emerald-500/20' : 'bg-red-500/20'}
-                `}>
+                `}
+                >
                   {result.success ? '✓' : '✕'}
                 </div>
                 <div>
-                  <h3 className={`text-lg font-semibold ${result.success ? 'text-emerald-400' : 'text-red-400'}`}>
+                  <h3
+                    className={`text-lg font-semibold ${result.success ? 'text-emerald-400' : 'text-red-400'}`}
+                  >
                     {result.success ? 'Transaction Approved' : 'Transaction Rejected'}
                   </h3>
                   <p className="text-sm text-slate-400">
-                    ${result.transaction.amount.toLocaleString()} with {result.transaction.approvalCount} approval(s)
+                    ${result.transaction.amount.toLocaleString()} with{' '}
+                    {result.transaction.approvalCount} approval(s)
                   </p>
                 </div>
               </div>
             </div>
-            
+
             {!result.success && result.violations.length > 0 && (
               <div className="p-6">
                 <h4 className="text-sm font-medium text-red-400 mb-3 uppercase tracking-wide">
@@ -544,10 +573,12 @@ export default function PolicySimulatorPage(): ReactElement {
                 <span className="text-xs text-slate-500 font-mono">
                   Audit Entry: {result.timestamp}
                 </span>
-                <span className={`
+                <span
+                  className={`
                   text-xs font-medium px-2 py-1 rounded
                   ${result.success ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'}
-                `}>
+                `}
+                >
                   {result.success ? 'APPROVED' : 'REJECTED'}
                 </span>
               </div>
@@ -572,7 +603,8 @@ export default function PolicySimulatorPage(): ReactElement {
             </div>
             <h3 className="text-white font-medium mb-2">Guardrail Enforcement</h3>
             <p className="text-slate-400 text-sm">
-              Transactions are validated against Zod schemas before execution, preventing policy violations.
+              Transactions are validated against Zod schemas before execution, preventing policy
+              violations.
             </p>
           </div>
           <div className="bg-slate-800/30 rounded-xl border border-slate-700/30 p-6">
@@ -581,7 +613,8 @@ export default function PolicySimulatorPage(): ReactElement {
             </div>
             <h3 className="text-white font-medium mb-2">Violation Traceability</h3>
             <p className="text-slate-400 text-sm">
-              When violations occur, the exact policy clause is highlighted, creating clear accountability.
+              When violations occur, the exact policy clause is highlighted, creating clear
+              accountability.
             </p>
           </div>
         </div>

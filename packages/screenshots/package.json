@@ -1,0 +1,15 @@
+{
+  "name": "@repo/screenshots",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "e2e": "playwright test",
+    "capture": "playwright test --project=screenshots",
+    "capture:update": "playwright test --project=screenshots --update-snapshots"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.52.0",
+    "@types/node": "^22.0.0"
+  }
+}

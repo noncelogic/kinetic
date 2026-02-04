@@ -1,5 +1,3 @@
-import { router, protectedProcedure } from '../trpc';
-import { TRPCError } from '@trpc/server';
 import {
   ApprovalQueueFiltersSchema,
   ReviewAssetSchema,
@@ -7,15 +5,27 @@ import {
   BulkRejectSchema,
   IdSchema,
 } from '@repo/entities';
+import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
+
+import { router, protectedProcedure } from '../trpc';
 
 // Role hierarchy for RBAC - using string literals to match Prisma enum
 type Role = 'VIEWER' | 'CONTRIBUTOR' | 'REVIEWER' | 'ADMIN';
 type AssetStatus = 'DRAFT' | 'PENDING_REVIEW' | 'IN_REVIEW' | 'APPROVED' | 'REJECTED' | 'ARCHIVED';
-type AuditAction = 
-  | 'ASSET_CREATED' | 'ASSET_UPDATED' | 'ASSET_SUBMITTED' | 'ASSET_REVIEWED'
-  | 'ASSET_APPROVED' | 'ASSET_REJECTED' | 'ASSET_ARCHIVED' | 'ASSET_RESTORED'
-  | 'USER_CREATED' | 'USER_UPDATED' | 'USER_DEACTIVATED' | 'USER_ROLE_CHANGED'
+type AuditAction =
+  | 'ASSET_CREATED'
+  | 'ASSET_UPDATED'
+  | 'ASSET_SUBMITTED'
+  | 'ASSET_REVIEWED'
+  | 'ASSET_APPROVED'
+  | 'ASSET_REJECTED'
+  | 'ASSET_ARCHIVED'
+  | 'ASSET_RESTORED'
+  | 'USER_CREATED'
+  | 'USER_UPDATED'
+  | 'USER_DEACTIVATED'
+  | 'USER_ROLE_CHANGED'
   | 'SYSTEM_EVENT';
 
 const ROLE_HIERARCHY: Record<Role, number> = {
@@ -29,7 +39,9 @@ const ROLE_HIERARCHY: Record<Role, number> = {
 const hasMinRole = (userRole: Role, minRole: Role): boolean => {
   const userLevel = ROLE_HIERARCHY[userRole];
   const minLevel = ROLE_HIERARCHY[minRole];
-  if (userLevel === undefined || minLevel === undefined) return false;
+  if (userLevel === undefined || minLevel === undefined) {
+    return false;
+  }
   return userLevel >= minLevel;
 };
 
@@ -43,7 +55,7 @@ async function createAuditLog(
   actorId: string | null,
   actorEmail: string | null,
   metadata?: Record<string, unknown>,
-  assetId?: string,
+  assetId?: string
 ): Promise<unknown> {
   return prisma.auditLog.create({
     data: {
@@ -149,37 +161,37 @@ export const assetRouter = router({
     }),
 
   // Get single asset
-  getById: protectedProcedure
-    .input(IdSchema)
-    .query(async ({ ctx, input }) => {
-      const asset = await ctx.prisma.asset.findUnique({
-        where: { id: input.id },
-        include: {
-          owner: { select: { id: true, name: true, email: true } },
-          assignee: { select: { id: true, name: true, email: true } },
-          reviews: {
-            include: {
-              reviewer: { select: { id: true, name: true, email: true } },
-            },
-            orderBy: { createdAt: 'desc' },
+  getById: protectedProcedure.input(IdSchema).query(async ({ ctx, input }) => {
+    const asset = await ctx.prisma.asset.findUnique({
+      where: { id: input.id },
+      include: {
+        owner: { select: { id: true, name: true, email: true } },
+        assignee: { select: { id: true, name: true, email: true } },
+        reviews: {
+          include: {
+            reviewer: { select: { id: true, name: true, email: true } },
           },
+          orderBy: { createdAt: 'desc' },
         },
-      });
+      },
+    });
 
-      if (!asset) {
-        throw new TRPCError({ code: 'NOT_FOUND', message: 'Asset not found' });
-      }
+    if (!asset) {
+      throw new TRPCError({ code: 'NOT_FOUND', message: 'Asset not found' });
+    }
 
-      return asset;
-    }),
+    return asset;
+  }),
 
   // Get audit trail for an asset
   auditTrail: protectedProcedure
-    .input(z.object({
-      assetId: z.string().uuid(),
-      limit: z.number().int().min(1).max(100).default(50),
-      cursor: z.string().optional(),
-    }))
+    .input(
+      z.object({
+        assetId: z.string().uuid(),
+        limit: z.number().int().min(1).max(100).default(50),
+        cursor: z.string().optional(),
+      })
+    )
     .query(async ({ ctx, input }) => {
       const user = await ctx.prisma.user.findUnique({
         where: { id: ctx.userId },
@@ -212,426 +224,415 @@ export const assetRouter = router({
     }),
 
   // Review (approve/reject) a single asset - REVIEWER or ADMIN
-  review: protectedProcedure
-    .input(ReviewAssetSchema)
-    .mutation(async ({ ctx, input }) => {
-      const user = await ctx.prisma.user.findUnique({
-        where: { id: ctx.userId },
+  review: protectedProcedure.input(ReviewAssetSchema).mutation(async ({ ctx, input }) => {
+    const user = await ctx.prisma.user.findUnique({
+      where: { id: ctx.userId },
+    });
+
+    if (!user || !hasMinRole(user.role as Role, 'REVIEWER')) {
+      throw new TRPCError({
+        code: 'FORBIDDEN',
+        message: 'Only reviewers and admins can review assets',
+      });
+    }
+
+    const asset = await ctx.prisma.asset.findUnique({
+      where: { id: input.assetId },
+    });
+
+    if (!asset) {
+      throw new TRPCError({ code: 'NOT_FOUND', message: 'Asset not found' });
+    }
+
+    if (!(['PENDING_REVIEW', 'IN_REVIEW'] as AssetStatus[]).includes(asset.status as AssetStatus)) {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: `Cannot review asset in ${asset.status} status`,
+      });
+    }
+
+    // Determine new status
+    let newStatus: AssetStatus;
+    let auditAction: AuditAction;
+
+    switch (input.decision) {
+      case 'APPROVED':
+        newStatus = 'APPROVED';
+        auditAction = 'ASSET_APPROVED';
+        break;
+      case 'REJECTED':
+        newStatus = 'REJECTED';
+        auditAction = 'ASSET_REJECTED';
+        break;
+      case 'CHANGES_REQUESTED':
+        newStatus = 'REJECTED'; // Goes back for revision
+        auditAction = 'ASSET_REJECTED';
+        break;
+      default:
+        throw new TRPCError({ code: 'BAD_REQUEST', message: 'Invalid decision' });
+    }
+
+    // Use transaction for atomicity
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const result = await ctx.prisma.$transaction(async (tx: any) => {
+      // Create review record
+      const review = await tx.assetReview.create({
+        data: {
+          assetId: input.assetId,
+          reviewerId: ctx.userId,
+          decision: input.decision,
+          comments: input.comments,
+        },
       });
 
-      if (!user || !hasMinRole(user.role as Role, 'REVIEWER')) {
-        throw new TRPCError({
-          code: 'FORBIDDEN',
-          message: 'Only reviewers and admins can review assets',
-        });
-      }
-
-      const asset = await ctx.prisma.asset.findUnique({
+      // Update asset status
+      const updatedAsset = await tx.asset.update({
         where: { id: input.assetId },
+        data: {
+          status: newStatus,
+          reviewedAt: new Date(),
+        },
+        include: {
+          owner: { select: { id: true, name: true, email: true } },
+        },
       });
 
-      if (!asset) {
-        throw new TRPCError({ code: 'NOT_FOUND', message: 'Asset not found' });
-      }
+      // Create audit log
+      await createAuditLog(
+        tx,
+        auditAction,
+        'Asset',
+        input.assetId,
+        ctx.userId,
+        user.email,
+        {
+          decision: input.decision,
+          comments: input.comments,
+          previousStatus: asset.status,
+          newStatus,
+        },
+        input.assetId
+      );
 
-      if (!(['PENDING_REVIEW', 'IN_REVIEW'] as AssetStatus[]).includes(asset.status as AssetStatus)) {
-        throw new TRPCError({
-          code: 'BAD_REQUEST',
-          message: `Cannot review asset in ${asset.status} status`,
-        });
-      }
+      return { asset: updatedAsset, review };
+    });
 
-      // Determine new status
-      let newStatus: AssetStatus;
-      let auditAction: AuditAction;
-      
-      switch (input.decision) {
-        case 'APPROVED':
-          newStatus = 'APPROVED';
-          auditAction = 'ASSET_APPROVED';
-          break;
-        case 'REJECTED':
-          newStatus = 'REJECTED';
-          auditAction = 'ASSET_REJECTED';
-          break;
-        case 'CHANGES_REQUESTED':
-          newStatus = 'REJECTED'; // Goes back for revision
-          auditAction = 'ASSET_REJECTED';
-          break;
-        default:
-          throw new TRPCError({ code: 'BAD_REQUEST', message: 'Invalid decision' });
-      }
-
-      // Use transaction for atomicity
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const result = await ctx.prisma.$transaction(async (tx: any) => {
-        // Create review record
-        const review = await tx.assetReview.create({
-          data: {
-            assetId: input.assetId,
-            reviewerId: ctx.userId,
-            decision: input.decision,
-            comments: input.comments,
-          },
-        });
-
-        // Update asset status
-        const updatedAsset = await tx.asset.update({
-          where: { id: input.assetId },
-          data: {
-            status: newStatus,
-            reviewedAt: new Date(),
-          },
-          include: {
-            owner: { select: { id: true, name: true, email: true } },
-          },
-        });
-
-        // Create audit log
-        await createAuditLog(
-          tx,
-          auditAction,
-          'Asset',
-          input.assetId,
-          ctx.userId,
-          user.email,
-          {
-            decision: input.decision,
-            comments: input.comments,
-            previousStatus: asset.status,
-            newStatus,
-          },
-          input.assetId,
-        );
-
-        return { asset: updatedAsset, review };
-      });
-
-      return result;
-    }),
+    return result;
+  }),
 
   // Bulk approve - ADMIN only
-  bulkApprove: protectedProcedure
-    .input(BulkApproveSchema)
-    .mutation(async ({ ctx, input }) => {
-      const user = await ctx.prisma.user.findUnique({
-        where: { id: ctx.userId },
+  bulkApprove: protectedProcedure.input(BulkApproveSchema).mutation(async ({ ctx, input }) => {
+    const user = await ctx.prisma.user.findUnique({
+      where: { id: ctx.userId },
+    });
+
+    if (!user || user.role !== 'ADMIN') {
+      throw new TRPCError({
+        code: 'FORBIDDEN',
+        message: 'Only admins can perform bulk approvals',
       });
+    }
 
-      if (!user || user.role !== 'ADMIN') {
-        throw new TRPCError({
-          code: 'FORBIDDEN',
-          message: 'Only admins can perform bulk approvals',
-        });
-      }
+    const assets = await ctx.prisma.asset.findMany({
+      where: {
+        id: { in: input.assetIds },
+        status: { in: ['PENDING_REVIEW', 'IN_REVIEW'] },
+      },
+    });
 
-      const assets = await ctx.prisma.asset.findMany({
-        where: {
-          id: { in: input.assetIds },
-          status: { in: ['PENDING_REVIEW', 'IN_REVIEW'] },
+    if (assets.length === 0) {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'No valid assets found for approval',
+      });
+    }
+
+    const validIds = assets.map((a: { id: string }) => a.id);
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const result = await ctx.prisma.$transaction(async (tx: any) => {
+      // Create review records for each
+      await Promise.all(
+        validIds.map((assetId: string) =>
+          tx.assetReview.create({
+            data: {
+              assetId,
+              reviewerId: ctx.userId,
+              decision: 'APPROVED',
+              comments: input.comments || 'Bulk approved',
+            },
+          })
+        )
+      );
+
+      // Update all assets
+      await tx.asset.updateMany({
+        where: { id: { in: validIds } },
+        data: {
+          status: 'APPROVED',
+          reviewedAt: new Date(),
         },
       });
 
-      if (assets.length === 0) {
-        throw new TRPCError({
-          code: 'BAD_REQUEST',
-          message: 'No valid assets found for approval',
-        });
-      }
-
-      const validIds = assets.map((a: { id: string }) => a.id);
-
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const result = await ctx.prisma.$transaction(async (tx: any) => {
-        // Create review records for each
-        await Promise.all(
-          validIds.map((assetId: string) =>
-            tx.assetReview.create({
-              data: {
-                assetId,
-                reviewerId: ctx.userId,
-                decision: 'APPROVED',
-                comments: input.comments || 'Bulk approved',
-              },
-            })
+      // Create audit logs
+      await Promise.all(
+        assets.map((asset: { id: string; status: AssetStatus }) =>
+          createAuditLog(
+            tx,
+            'ASSET_APPROVED',
+            'Asset',
+            asset.id,
+            ctx.userId,
+            user.email,
+            {
+              decision: 'APPROVED',
+              comments: input.comments || 'Bulk approved',
+              previousStatus: asset.status,
+              newStatus: 'APPROVED',
+              bulkAction: true,
+              batchSize: validIds.length,
+            },
+            asset.id
           )
-        );
+        )
+      );
 
-        // Update all assets
-        await tx.asset.updateMany({
-          where: { id: { in: validIds } },
-          data: {
-            status: 'APPROVED',
-            reviewedAt: new Date(),
-          },
-        });
+      return { count: validIds.length };
+    });
 
-        // Create audit logs
-        await Promise.all(
-          assets.map((asset: { id: string; status: AssetStatus }) =>
-            createAuditLog(
-              tx,
-              'ASSET_APPROVED',
-              'Asset',
-              asset.id,
-              ctx.userId,
-              user.email,
-              {
-                decision: 'APPROVED',
-                comments: input.comments || 'Bulk approved',
-                previousStatus: asset.status,
-                newStatus: 'APPROVED',
-                bulkAction: true,
-                batchSize: validIds.length,
-              },
-              asset.id,
-            )
-          )
-        );
-
-        return { count: validIds.length };
-      });
-
-      return result;
-    }),
+    return result;
+  }),
 
   // Bulk reject - ADMIN only
-  bulkReject: protectedProcedure
-    .input(BulkRejectSchema)
-    .mutation(async ({ ctx, input }) => {
-      const user = await ctx.prisma.user.findUnique({
-        where: { id: ctx.userId },
+  bulkReject: protectedProcedure.input(BulkRejectSchema).mutation(async ({ ctx, input }) => {
+    const user = await ctx.prisma.user.findUnique({
+      where: { id: ctx.userId },
+    });
+
+    if (!user || user.role !== 'ADMIN') {
+      throw new TRPCError({
+        code: 'FORBIDDEN',
+        message: 'Only admins can perform bulk rejections',
       });
+    }
 
-      if (!user || user.role !== 'ADMIN') {
-        throw new TRPCError({
-          code: 'FORBIDDEN',
-          message: 'Only admins can perform bulk rejections',
-        });
-      }
+    const assets = await ctx.prisma.asset.findMany({
+      where: {
+        id: { in: input.assetIds },
+        status: { in: ['PENDING_REVIEW', 'IN_REVIEW'] },
+      },
+    });
 
-      const assets = await ctx.prisma.asset.findMany({
-        where: {
-          id: { in: input.assetIds },
-          status: { in: ['PENDING_REVIEW', 'IN_REVIEW'] },
+    if (assets.length === 0) {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'No valid assets found for rejection',
+      });
+    }
+
+    const validIds = assets.map((a: { id: string }) => a.id);
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const result = await ctx.prisma.$transaction(async (tx: any) => {
+      // Create review records
+      await Promise.all(
+        validIds.map((assetId: string) =>
+          tx.assetReview.create({
+            data: {
+              assetId,
+              reviewerId: ctx.userId,
+              decision: 'REJECTED',
+              comments: input.reason,
+            },
+          })
+        )
+      );
+
+      // Update all assets
+      await tx.asset.updateMany({
+        where: { id: { in: validIds } },
+        data: {
+          status: 'REJECTED',
+          reviewedAt: new Date(),
         },
       });
 
-      if (assets.length === 0) {
-        throw new TRPCError({
-          code: 'BAD_REQUEST',
-          message: 'No valid assets found for rejection',
-        });
-      }
-
-      const validIds = assets.map((a: { id: string }) => a.id);
-
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const result = await ctx.prisma.$transaction(async (tx: any) => {
-        // Create review records
-        await Promise.all(
-          validIds.map((assetId: string) =>
-            tx.assetReview.create({
-              data: {
-                assetId,
-                reviewerId: ctx.userId,
-                decision: 'REJECTED',
-                comments: input.reason,
-              },
-            })
+      // Create audit logs
+      await Promise.all(
+        assets.map((asset: { id: string; status: AssetStatus }) =>
+          createAuditLog(
+            tx,
+            'ASSET_REJECTED',
+            'Asset',
+            asset.id,
+            ctx.userId,
+            user.email,
+            {
+              decision: 'REJECTED',
+              reason: input.reason,
+              previousStatus: asset.status,
+              newStatus: 'REJECTED',
+              bulkAction: true,
+              batchSize: validIds.length,
+            },
+            asset.id
           )
-        );
+        )
+      );
 
-        // Update all assets
-        await tx.asset.updateMany({
-          where: { id: { in: validIds } },
-          data: {
-            status: 'REJECTED',
-            reviewedAt: new Date(),
-          },
-        });
+      return { count: validIds.length };
+    });
 
-        // Create audit logs
-        await Promise.all(
-          assets.map((asset: { id: string; status: AssetStatus }) =>
-            createAuditLog(
-              tx,
-              'ASSET_REJECTED',
-              'Asset',
-              asset.id,
-              ctx.userId,
-              user.email,
-              {
-                decision: 'REJECTED',
-                reason: input.reason,
-                previousStatus: asset.status,
-                newStatus: 'REJECTED',
-                bulkAction: true,
-                batchSize: validIds.length,
-              },
-              asset.id,
-            )
-          )
-        );
-
-        return { count: validIds.length };
-      });
-
-      return result;
-    }),
+    return result;
+  }),
 
   // Claim asset for review (assign to self)
-  claim: protectedProcedure
-    .input(IdSchema)
-    .mutation(async ({ ctx, input }) => {
-      const user = await ctx.prisma.user.findUnique({
-        where: { id: ctx.userId },
+  claim: protectedProcedure.input(IdSchema).mutation(async ({ ctx, input }) => {
+    const user = await ctx.prisma.user.findUnique({
+      where: { id: ctx.userId },
+    });
+
+    if (!user || !hasMinRole(user.role as Role, 'REVIEWER')) {
+      throw new TRPCError({
+        code: 'FORBIDDEN',
+        message: 'Only reviewers and admins can claim assets',
       });
+    }
 
-      if (!user || !hasMinRole(user.role as Role, 'REVIEWER')) {
-        throw new TRPCError({
-          code: 'FORBIDDEN',
-          message: 'Only reviewers and admins can claim assets',
-        });
-      }
+    const asset = await ctx.prisma.asset.findUnique({
+      where: { id: input.id },
+    });
 
-      const asset = await ctx.prisma.asset.findUnique({
+    if (!asset) {
+      throw new TRPCError({ code: 'NOT_FOUND', message: 'Asset not found' });
+    }
+
+    if (asset.status !== 'PENDING_REVIEW') {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'Only pending assets can be claimed',
+      });
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const result = await ctx.prisma.$transaction(async (tx: any) => {
+      const updatedAsset = await tx.asset.update({
         where: { id: input.id },
+        data: {
+          assigneeId: ctx.userId,
+          status: 'IN_REVIEW',
+        },
+        include: {
+          owner: { select: { id: true, name: true, email: true } },
+          assignee: { select: { id: true, name: true, email: true } },
+        },
       });
 
-      if (!asset) {
-        throw new TRPCError({ code: 'NOT_FOUND', message: 'Asset not found' });
-      }
+      await createAuditLog(
+        tx,
+        'ASSET_REVIEWED',
+        'Asset',
+        input.id,
+        ctx.userId,
+        user.email,
+        {
+          action: 'claimed',
+          previousStatus: asset.status,
+          newStatus: 'IN_REVIEW',
+          assigneeId: ctx.userId,
+        },
+        input.id
+      );
 
-      if (asset.status !== 'PENDING_REVIEW') {
-        throw new TRPCError({
-          code: 'BAD_REQUEST',
-          message: 'Only pending assets can be claimed',
-        });
-      }
+      return updatedAsset;
+    });
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const result = await ctx.prisma.$transaction(async (tx: any) => {
-        const updatedAsset = await tx.asset.update({
-          where: { id: input.id },
-          data: {
-            assigneeId: ctx.userId,
-            status: 'IN_REVIEW',
-          },
-          include: {
-            owner: { select: { id: true, name: true, email: true } },
-            assignee: { select: { id: true, name: true, email: true } },
-          },
-        });
-
-        await createAuditLog(
-          tx,
-          'ASSET_REVIEWED',
-          'Asset',
-          input.id,
-          ctx.userId,
-          user.email,
-          {
-            action: 'claimed',
-            previousStatus: asset.status,
-            newStatus: 'IN_REVIEW',
-            assigneeId: ctx.userId,
-          },
-          input.id,
-        );
-
-        return updatedAsset;
-      });
-
-      return result;
-    }),
+    return result;
+  }),
 
   // Release claim (unassign from self)
-  release: protectedProcedure
-    .input(IdSchema)
-    .mutation(async ({ ctx, input }) => {
-      const user = await ctx.prisma.user.findUnique({
-        where: { id: ctx.userId },
+  release: protectedProcedure.input(IdSchema).mutation(async ({ ctx, input }) => {
+    const user = await ctx.prisma.user.findUnique({
+      where: { id: ctx.userId },
+    });
+
+    if (!user) {
+      throw new TRPCError({ code: 'UNAUTHORIZED' });
+    }
+
+    const asset = await ctx.prisma.asset.findUnique({
+      where: { id: input.id },
+    });
+
+    if (!asset) {
+      throw new TRPCError({ code: 'NOT_FOUND', message: 'Asset not found' });
+    }
+
+    // Only assignee or admin can release
+    if (asset.assigneeId !== ctx.userId && user.role !== 'ADMIN') {
+      throw new TRPCError({
+        code: 'FORBIDDEN',
+        message: 'Only the assigned reviewer or an admin can release this asset',
       });
+    }
 
-      if (!user) {
-        throw new TRPCError({ code: 'UNAUTHORIZED' });
-      }
-
-      const asset = await ctx.prisma.asset.findUnique({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const result = await ctx.prisma.$transaction(async (tx: any) => {
+      const updatedAsset = await tx.asset.update({
         where: { id: input.id },
+        data: {
+          assigneeId: null,
+          status: 'PENDING_REVIEW',
+        },
+        include: {
+          owner: { select: { id: true, name: true, email: true } },
+        },
       });
 
-      if (!asset) {
-        throw new TRPCError({ code: 'NOT_FOUND', message: 'Asset not found' });
-      }
+      await createAuditLog(
+        tx,
+        'ASSET_REVIEWED',
+        'Asset',
+        input.id,
+        ctx.userId,
+        user.email,
+        {
+          action: 'released',
+          previousStatus: asset.status,
+          newStatus: 'PENDING_REVIEW',
+          previousAssigneeId: asset.assigneeId,
+        },
+        input.id
+      );
 
-      // Only assignee or admin can release
-      if (asset.assigneeId !== ctx.userId && user.role !== 'ADMIN') {
-        throw new TRPCError({
-          code: 'FORBIDDEN',
-          message: 'Only the assigned reviewer or an admin can release this asset',
-        });
-      }
+      return updatedAsset;
+    });
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const result = await ctx.prisma.$transaction(async (tx: any) => {
-        const updatedAsset = await tx.asset.update({
-          where: { id: input.id },
-          data: {
-            assigneeId: null,
-            status: 'PENDING_REVIEW',
-          },
-          include: {
-            owner: { select: { id: true, name: true, email: true } },
-          },
-        });
-
-        await createAuditLog(
-          tx,
-          'ASSET_REVIEWED',
-          'Asset',
-          input.id,
-          ctx.userId,
-          user.email,
-          {
-            action: 'released',
-            previousStatus: asset.status,
-            newStatus: 'PENDING_REVIEW',
-            previousAssigneeId: asset.assigneeId,
-          },
-          input.id,
-        );
-
-        return updatedAsset;
-      });
-
-      return result;
-    }),
+    return result;
+  }),
 
   // Get reviewers list (for assignment dropdown)
-  getReviewers: protectedProcedure
-    .query(async ({ ctx }) => {
-      const user = await ctx.prisma.user.findUnique({
-        where: { id: ctx.userId },
-      });
+  getReviewers: protectedProcedure.query(async ({ ctx }) => {
+    const user = await ctx.prisma.user.findUnique({
+      where: { id: ctx.userId },
+    });
 
-      if (!user || !hasMinRole(user.role as Role, 'REVIEWER')) {
-        throw new TRPCError({ code: 'FORBIDDEN' });
-      }
+    if (!user || !hasMinRole(user.role as Role, 'REVIEWER')) {
+      throw new TRPCError({ code: 'FORBIDDEN' });
+    }
 
-      return ctx.prisma.user.findMany({
-        where: {
-          role: { in: ['REVIEWER', 'ADMIN'] },
-          isActive: true,
-        },
-        select: {
-          id: true,
-          name: true,
-          email: true,
-          role: true,
-        },
-        orderBy: { name: 'asc' },
-      });
-    }),
+    return ctx.prisma.user.findMany({
+      where: {
+        role: { in: ['REVIEWER', 'ADMIN'] },
+        isActive: true,
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+      },
+      orderBy: { name: 'asc' },
+    });
+  }),
 });

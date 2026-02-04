@@ -5,7 +5,14 @@ export { cn } from './lib/utils';
 export { Button, buttonVariants } from './components/button';
 export { Input } from './components/input';
 export { Label } from './components/label';
-export { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from './components/card';
+export {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from './components/card';
 export { Badge, badgeVariants } from './components/badge';
 export {
   Dialog,
@@ -16,12 +23,24 @@ export {
   DialogDescription,
   DialogFooter,
 } from './components/dialog';
-export {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from './components/select';
+export { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from './components/select';
 export { Tabs, TabsList, TabsTrigger, TabsContent } from './components/tabs';
 export { ResizablePanelGroup, ResizablePanel, ResizableHandle } from './components/resizable';
+export {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuCheckboxItem,
+  DropdownMenuRadioItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuGroup,
+  DropdownMenuPortal,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuRadioGroup,
+} from './components/dropdown-menu';
+export { Avatar, AvatarImage, AvatarFallback } from './components/avatar';

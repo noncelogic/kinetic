@@ -7,6 +7,7 @@ Build maintainable SaaS apps at 10x speed with agentic coding loops.
 ## Why This Exists
 
 Most AI-generated code is throwaway. This boilerplate changes that by:
+
 - **Structured for agents** — Clear package boundaries agents can reason about
 - **Type-safe end-to-end** — TypeScript + Zod + tRPC = less hallucination
 - **TDD-friendly** — Test files agents can verify against
@@ -42,6 +43,7 @@ Most AI-generated code is throwaway. This boilerplate changes that by:
 ## Agent Instructions
 
 This repo includes `CLAUDE.md` and `GEMINI.md` files with:
+
 - Project structure overview
 - Code style guidelines
 - Common commands
@@ -111,4 +113,4 @@ MIT
 
 ---
 
-*Built for the agentic era.*
+_Built for the agentic era._

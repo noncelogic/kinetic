@@ -41,11 +41,13 @@ export type AuditLog = z.infer<typeof AuditLogSchema>;
 
 // Audit log with actor relation
 export const AuditLogWithActorSchema = AuditLogSchema.extend({
-  actor: z.object({
-    id: z.string().uuid(),
-    name: z.string(),
-    email: z.string().email(),
-  }).nullable(),
+  actor: z
+    .object({
+      id: z.string().uuid(),
+      name: z.string(),
+      email: z.string().email(),
+    })
+    .nullable(),
 });
 
 export type AuditLogWithActor = z.infer<typeof AuditLogWithActorSchema>;

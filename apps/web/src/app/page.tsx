@@ -1,9 +1,11 @@
-import Link from 'next/link';
-import type { ReactElement } from 'react';
-import { ShieldCheck, Zap, Lock, Database, Code, CheckCircle } from 'lucide-react';
 import { Button } from '@repo/ui';
-import { UserNav } from '@/components/user-nav';
+import { ShieldCheck, Zap, Lock, Database, Code, CheckCircle } from 'lucide-react';
+import Link from 'next/link';
+
+import type { ReactElement } from 'react';
+
 import { auth } from '@/auth';
+import { UserNav } from '@/components/user-nav';
 
 export default async function Home(): Promise<ReactElement> {
   const session = await auth();
@@ -20,10 +22,16 @@ export default async function Home(): Promise<ReactElement> {
             NonceLogic
           </div>
           <div className="flex items-center gap-6">
-            <Link href="#features" className="text-sm font-medium text-muted-foreground hover:text-foreground transition">
+            <Link
+              href="#features"
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition"
+            >
               Features
             </Link>
-            <Link href="#tech-stack" className="text-sm font-medium text-muted-foreground hover:text-foreground transition">
+            <Link
+              href="#tech-stack"
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition"
+            >
               Stack
             </Link>
             <UserNav />
@@ -41,17 +49,17 @@ export default async function Home(): Promise<ReactElement> {
             </span>
             Concept Car Live: AI Policy Engine
           </div>
-          
+
           <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/70">
-            Ship AI Features <br className="hidden md:block"/>
+            Ship AI Features <br className="hidden md:block" />
             <span className="text-primary">Without The Risk.</span>
           </h1>
-          
+
           <p className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed">
-            The enterprise-grade boilerplate for Generative AI. 
-            Built-in C2PA tagging, PII detection, and policy enforcement rails.
+            The enterprise-grade boilerplate for Generative AI. Built-in C2PA tagging, PII
+            detection, and policy enforcement rails.
           </p>
-          
+
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
             {session ? (
               <Link href="/media">
@@ -60,12 +68,18 @@ export default async function Home(): Promise<ReactElement> {
                 </Button>
               </Link>
             ) : (
-              <form action={async () => {
-                'use server';
-                const { signIn } = await import('@/auth');
-                await signIn('google', { redirectTo: '/media' });
-              }}>
-                <Button type="submit" size="lg" className="h-12 px-8 text-base shadow-lg shadow-primary/25">
+              <form
+                action={async () => {
+                  'use server';
+                  const { signIn } = await import('@/auth');
+                  await signIn('google', { redirectTo: '/media' });
+                }}
+              >
+                <Button
+                  type="submit"
+                  size="lg"
+                  className="h-12 px-8 text-base shadow-lg shadow-primary/25"
+                >
                   Sign In with Google
                 </Button>
               </form>
@@ -81,22 +95,22 @@ export default async function Home(): Promise<ReactElement> {
           <div className="relative rounded-xl border bg-background/50 shadow-2xl p-2 md:p-4 backdrop-blur-sm">
             <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent"></div>
             <div className="rounded-lg overflow-hidden border bg-muted aspect-[16/9] relative group">
-               {/* Replace this div with an <Image /> of the dashboard */}
-               <div className="absolute inset-0 flex items-center justify-center bg-zinc-900 text-zinc-500">
-                  <div className="text-center space-y-2">
-                    <Database className="w-12 h-12 mx-auto opacity-20" />
-                    <p className="font-mono text-sm">Media Banking Dashboard Preview</p>
-                  </div>
-               </div>
-               
-               {/* Simulated UI Overlay */}
-               <div className="absolute top-4 left-4 right-4 h-12 bg-zinc-800/50 rounded flex items-center px-4 border border-white/5">
-                 <div className="flex gap-2">
-                   <div className="w-3 h-3 rounded-full bg-red-500/50"></div>
-                   <div className="w-3 h-3 rounded-full bg-yellow-500/50"></div>
-                   <div className="w-3 h-3 rounded-full bg-green-500/50"></div>
-                 </div>
-               </div>
+              {/* Replace this div with an <Image /> of the dashboard */}
+              <div className="absolute inset-0 flex items-center justify-center bg-zinc-900 text-zinc-500">
+                <div className="text-center space-y-2">
+                  <Database className="w-12 h-12 mx-auto opacity-20" />
+                  <p className="font-mono text-sm">Media Banking Dashboard Preview</p>
+                </div>
+              </div>
+
+              {/* Simulated UI Overlay */}
+              <div className="absolute top-4 left-4 right-4 h-12 bg-zinc-800/50 rounded flex items-center px-4 border border-white/5">
+                <div className="flex gap-2">
+                  <div className="w-3 h-3 rounded-full bg-red-500/50"></div>
+                  <div className="w-3 h-3 rounded-full bg-yellow-500/50"></div>
+                  <div className="w-3 h-3 rounded-full bg-green-500/50"></div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -109,7 +123,7 @@ export default async function Home(): Promise<ReactElement> {
             <h2 className="text-3xl font-bold tracking-tight mb-4">The NonceLogic Stack</h2>
             <p className="text-muted-foreground">Opinionated, type-safe, and production-ready.</p>
           </div>
-          
+
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {[
               { title: 'Next.js 15', desc: 'App Router & Server Actions', icon: Zap },
@@ -117,7 +131,10 @@ export default async function Home(): Promise<ReactElement> {
               { title: 'Prisma + Neon', desc: 'Serverless PostgreSQL', icon: Database },
               { title: 'NextAuth v5', desc: 'Own your user data', icon: Lock },
             ].map((tech) => (
-              <div key={tech.title} className="flex flex-col items-center text-center p-6 rounded-2xl bg-background border hover:border-primary/50 transition-colors">
+              <div
+                key={tech.title}
+                className="flex flex-col items-center text-center p-6 rounded-2xl bg-background border hover:border-primary/50 transition-colors"
+              >
                 <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-4">
                   <tech.icon className="w-6 h-6" />
                 </div>
@@ -138,9 +155,10 @@ export default async function Home(): Promise<ReactElement> {
                 Governance as Code.
               </h2>
               <p className="text-lg text-muted-foreground mb-8">
-                Don't rely on manual reviews. NonceLogic embeds policy checks directly into the generation pipeline.
+                Don't rely on manual reviews. NonceLogic embeds policy checks directly into the
+                generation pipeline.
               </p>
-              
+
               <ul className="space-y-4">
                 {[
                   'Real-time PII Detection & Redaction',
@@ -155,7 +173,7 @@ export default async function Home(): Promise<ReactElement> {
                 ))}
               </ul>
             </div>
-            
+
             <div className="relative">
               <div className="absolute -inset-4 bg-gradient-to-r from-primary to-purple-600 rounded-2xl opacity-20 blur-2xl"></div>
               <div className="relative rounded-2xl border bg-background p-6 shadow-2xl">
@@ -192,8 +210,8 @@ export default async function Home(): Promise<ReactElement> {
       <footer className="py-12 px-4 border-t bg-muted/10">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-2 text-sm text-muted-foreground font-medium">
-             <ShieldCheck className="w-4 h-4" />
-             NonceLogic
+            <ShieldCheck className="w-4 h-4" />
+            NonceLogic
           </div>
           <div className="text-sm text-muted-foreground">
             © {new Date().getFullYear()} NonceLogic. All rights reserved.

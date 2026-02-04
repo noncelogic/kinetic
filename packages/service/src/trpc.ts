@@ -1,6 +1,6 @@
+import { prisma } from '@repo/database';
 import { initTRPC, TRPCError } from '@trpc/server';
 import superjson from 'superjson';
-import { prisma } from '@repo/database';
 
 export interface Context {
   prisma: typeof prisma;

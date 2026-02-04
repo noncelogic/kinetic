@@ -1,7 +1,7 @@
-import { NextAuth } from "next-auth";
-import Google from "next-auth/providers/google";
-import { PrismaAdapter } from "@auth/prisma-adapter";
-import { prisma } from "@repo/database";
+import { PrismaAdapter } from '@auth/prisma-adapter';
+import { prisma } from '@repo/database';
+import NextAuth from 'next-auth';
+import Google from 'next-auth/providers/google';
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
@@ -11,13 +11,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       clientSecret: process.env.AUTH_GOOGLE_SECRET,
     }),
   ],
-  session: { strategy: "jwt" },
+  session: { strategy: 'jwt' },
   callbacks: {
     async session({ session, token }) {
       if (token.sub && session.user) {
         session.user.id = token.sub;
         // Add role to session if needed
-        // session.user.role = token.role 
+        // session.user.role = token.role
       }
       return session;
     },

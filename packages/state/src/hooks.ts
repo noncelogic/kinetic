@@ -1,4 +1,5 @@
 import { useMachine } from '@xstate/react';
+
 import { onboardingMachine } from './machines/example-flow';
 
 /**

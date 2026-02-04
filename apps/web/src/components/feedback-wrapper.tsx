@@ -1,6 +1,7 @@
 'use client';
 
 import { FeedbackWidget } from '@repo/feedback';
+
 import { trpc } from '@/trpc/client';
 
 export function FeedbackWrapper() {
@@ -11,10 +12,10 @@ export function FeedbackWrapper() {
       onSubmit={async (data) => {
         // Map frontend type to backend type
         const typeMap: Record<string, 'BUG' | 'FEATURE' | 'GENERAL'> = {
-          'bug': 'BUG',
-          'feature': 'FEATURE',
-          'general': 'GENERAL',
-          'praise': 'GENERAL'
+          bug: 'BUG',
+          feature: 'FEATURE',
+          general: 'GENERAL',
+          praise: 'GENERAL',
         };
 
         await mutation.mutateAsync({

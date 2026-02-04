@@ -1,14 +1,41 @@
 'use client';
 
-import * as React from 'react';
-import { MessageSquarePlus, Bug, Lightbulb, MessageCircle, Heart, X, Send, Loader2, Camera } from 'lucide-react';
 import html2canvas from 'html2canvas';
-import type { FeedbackType, FeedbackWidgetConfig, FeedbackSubmission, FeedbackMetadata } from '../types';
+import {
+  MessageSquarePlus,
+  Bug,
+  Lightbulb,
+  MessageCircle,
+  Heart,
+  X,
+  Send,
+  Loader2,
+  Camera,
+} from 'lucide-react';
+import * as React from 'react';
+
 import { cn, captureMetadata } from '../utils';
 
-const FEEDBACK_TYPES: { type: FeedbackType; icon: React.ElementType; label: string; description: string }[] = [
-  { type: 'bug', icon: Bug, label: 'Bug Report', description: 'Something isn\'t working' },
-  { type: 'feature', icon: Lightbulb, label: 'Feature Request', description: 'Suggest an improvement' },
+import type {
+  FeedbackType,
+  FeedbackWidgetConfig,
+  FeedbackSubmission,
+  FeedbackMetadata,
+} from '../types';
+
+const FEEDBACK_TYPES: {
+  type: FeedbackType;
+  icon: React.ElementType;
+  label: string;
+  description: string;
+}[] = [
+  { type: 'bug', icon: Bug, label: 'Bug Report', description: "Something isn't working" },
+  {
+    type: 'feature',
+    icon: Lightbulb,
+    label: 'Feature Request',
+    description: 'Suggest an improvement',
+  },
   { type: 'general', icon: MessageCircle, label: 'General', description: 'Other feedback' },
   { type: 'praise', icon: Heart, label: 'Praise', description: 'Share what you love' },
 ];
@@ -70,17 +97,20 @@ export function FeedbackWidget({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedType || !formData.title.trim()) return;
+    if (!selectedType || !formData.title.trim()) {
+      return;
+    }
 
     setIsSubmitting(true);
-    
+
     const metadata: FeedbackMetadata = {
       ...captureMetadata(),
       screenshot: screenshot || undefined,
       userId: user?.id,
-      sessionId: typeof sessionStorage !== 'undefined' 
-        ? sessionStorage.getItem('feedback-session-id') || undefined 
-        : undefined,
+      sessionId:
+        typeof sessionStorage !== 'undefined'
+          ? sessionStorage.getItem('feedback-session-id') || undefined
+          : undefined,
     };
 
     const submission: FeedbackSubmission = {
@@ -95,7 +125,7 @@ export function FeedbackWidget({
       await onSubmit(submission);
       setStep('success');
       onSuccess?.(submission);
-      
+
       // Reset after delay
       setTimeout(() => {
         setIsOpen(false);
@@ -180,8 +210,12 @@ export function FeedbackWidget({
                     )}
                   >
                     <Icon className="w-6 h-6 text-zinc-600 dark:text-zinc-400" />
-                    <span className="text-sm font-medium text-zinc-900 dark:text-zinc-100">{label}</span>
-                    <span className="text-xs text-zinc-500 dark:text-zinc-400 text-center">{description}</span>
+                    <span className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
+                      {label}
+                    </span>
+                    <span className="text-xs text-zinc-500 dark:text-zinc-400 text-center">
+                      {description}
+                    </span>
                   </button>
                 ))}
               </div>
@@ -205,8 +239,11 @@ export function FeedbackWidget({
                     </div>
                   ) : screenshot ? (
                     <div className="relative h-24 w-full rounded-lg overflow-hidden border border-zinc-200 dark:border-zinc-700">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={screenshot} alt="Screenshot" className="w-full h-full object-cover" />
+                      <img
+                        src={screenshot}
+                        alt="Screenshot"
+                        className="w-full h-full object-cover"
+                      />
                       <button
                         type="button"
                         onClick={() => setScreenshot(null)}
@@ -227,9 +264,12 @@ export function FeedbackWidget({
                     </button>
                   )}
                 </div>
-                
+
                 <div>
-                  <label htmlFor="feedback-title" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
+                  <label
+                    htmlFor="feedback-title"
+                    className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1"
+                  >
                     Title *
                   </label>
                   <input
@@ -237,7 +277,7 @@ export function FeedbackWidget({
                     type="text"
                     required
                     value={formData.title}
-                    onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, title: e.target.value }))}
                     className={cn(
                       'w-full px-3 py-2 rounded-lg',
                       'border border-zinc-300 dark:border-zinc-600',
@@ -252,14 +292,19 @@ export function FeedbackWidget({
                 </div>
 
                 <div>
-                  <label htmlFor="feedback-description" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
+                  <label
+                    htmlFor="feedback-description"
+                    className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1"
+                  >
                     Description
                   </label>
                   <textarea
                     id="feedback-description"
                     rows={3}
                     value={formData.description}
-                    onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({ ...prev, description: e.target.value }))
+                    }
                     className={cn(
                       'w-full px-3 py-2 rounded-lg resize-none',
                       'border border-zinc-300 dark:border-zinc-600',
@@ -275,14 +320,17 @@ export function FeedbackWidget({
 
                 {!user?.email && (
                   <div>
-                    <label htmlFor="feedback-email" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
+                    <label
+                      htmlFor="feedback-email"
+                      className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1"
+                    >
                       Email (optional)
                     </label>
                     <input
                       id="feedback-email"
                       type="email"
                       value={formData.email}
-                      onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                      onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
                       className={cn(
                         'w-full px-3 py-2 rounded-lg',
                         'border border-zinc-300 dark:border-zinc-600',
@@ -325,7 +373,7 @@ export function FeedbackWidget({
 
             {step === 'success' && (
               <div className="text-center py-6">
-                <div 
+                <div
                   className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4"
                   style={{ backgroundColor: `${accentColor}20` }}
                 >

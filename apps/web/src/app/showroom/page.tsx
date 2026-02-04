@@ -27,7 +27,9 @@ function VelocityTicker(): ReactElement {
         signoffs: Math.min(99, prev.signoffs + Math.random() * 0.5),
       }));
     }, 3000);
-    return () => { clearInterval(interval); };
+    return () => {
+      clearInterval(interval);
+    };
   }, []);
 
   return (
@@ -56,9 +58,7 @@ function VelocityTicker(): ReactElement {
             <span className="font-mono text-xs text-[#00FF41]/60 uppercase tracking-wider">
               Active Sprints
             </span>
-            <span className="font-mono text-lg font-bold text-[#00FF41]">
-              {metrics.sprints}
-            </span>
+            <span className="font-mono text-lg font-bold text-[#00FF41]">{metrics.sprints}</span>
           </div>
 
           <div className="w-px h-6 bg-[#00FF41]/20" />
@@ -86,9 +86,7 @@ function VelocityTicker(): ReactElement {
           <div className="w-px h-6 bg-[#00FF41]/20" />
 
           <div className="flex items-center gap-3 min-w-fit">
-            <span className="font-mono text-xs text-white/40 uppercase tracking-wider">
-              Status
-            </span>
+            <span className="font-mono text-xs text-white/40 uppercase tracking-wider">Status</span>
             <span className="font-mono text-sm font-medium text-[#00FF41] flex items-center gap-2">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00FF41] opacity-75" />
@@ -167,7 +165,9 @@ function HUDBadge({ label, value, color = 'green' }: HUDBadgeProps): ReactElemen
   const borderClass = color === 'green' ? 'border-[#00FF41]/30' : 'border-[#FF5F00]/30';
 
   return (
-    <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded border ${borderClass} bg-[#050505]/50 backdrop-blur-sm`}>
+    <div
+      className={`inline-flex items-center gap-2 px-3 py-1.5 rounded border ${borderClass} bg-[#050505]/50 backdrop-blur-sm`}
+    >
       <span className="font-mono text-[10px] text-white/40 uppercase tracking-wider">{label}</span>
       <span className={`font-mono text-sm font-bold ${colorClass}`}>{value}</span>
     </div>
@@ -211,12 +211,15 @@ function ProblemSolutionSection(): ReactElement {
               The Problem
             </span>
           </div>
-          <h2 className="text-3xl md:text-5xl font-bold text-white mb-4" style={{ fontFamily: 'Satoshi, sans-serif' }}>
+          <h2
+            className="text-3xl md:text-5xl font-bold text-white mb-4"
+            style={{ fontFamily: 'Satoshi, sans-serif' }}
+          >
             Traditional Projects <span className="text-[#FF5F00]">Break</span>
           </h2>
           <p className="text-lg text-white/50 max-w-2xl mx-auto font-light">
-            You've seen it before. Discovery drags. Scope creeps. 
-            The prototype arrives months late—and still misses the mark.
+            You've seen it before. Discovery drags. Scope creeps. The prototype arrives months
+            late—and still misses the mark.
           </p>
         </div>
 
@@ -229,9 +232,13 @@ function ProblemSolutionSection(): ReactElement {
             >
               {/* Problem side */}
               <div className="flex items-start gap-4 mb-4 pb-4 border-b border-white/5">
-                <span className="text-2xl opacity-50 group-hover:opacity-30 transition-opacity">{item.icon}</span>
+                <span className="text-2xl opacity-50 group-hover:opacity-30 transition-opacity">
+                  {item.icon}
+                </span>
                 <div>
-                  <span className="font-mono text-[10px] text-[#FF5F00]/60 uppercase tracking-wider">Problem</span>
+                  <span className="font-mono text-[10px] text-[#FF5F00]/60 uppercase tracking-wider">
+                    Problem
+                  </span>
                   <p className="text-white/60 line-through decoration-[#FF5F00]/40 group-hover:text-white/30 transition-colors">
                     {item.problem}
                   </p>
@@ -242,7 +249,9 @@ function ProblemSolutionSection(): ReactElement {
               <div className="flex items-start gap-4">
                 <span className="text-2xl group-hover:scale-110 transition-transform">✓</span>
                 <div>
-                  <span className="font-mono text-[10px] text-[#00FF41]/60 uppercase tracking-wider">Solution</span>
+                  <span className="font-mono text-[10px] text-[#00FF41]/60 uppercase tracking-wider">
+                    Solution
+                  </span>
                   <p className="text-[#00FF41] font-medium">{item.solution}</p>
                 </div>
               </div>
@@ -300,12 +309,15 @@ function ProcessTimeline(): ReactElement {
               The Process
             </span>
           </div>
-          <h2 className="text-3xl md:text-5xl font-bold text-white mb-4" style={{ fontFamily: 'Satoshi, sans-serif' }}>
+          <h2
+            className="text-3xl md:text-5xl font-bold text-white mb-4"
+            style={{ fontFamily: 'Satoshi, sans-serif' }}
+          >
             Zero to Sign-off in <span className="text-[#00FF41]">14 Days</span>
           </h2>
           <p className="text-lg text-white/50 max-w-2xl mx-auto font-light">
-            A battle-tested process that delivers clarity, not chaos. 
-            Every day has a purpose. Every output is tangible.
+            A battle-tested process that delivers clarity, not chaos. Every day has a purpose. Every
+            output is tangible.
           </p>
         </div>
 
@@ -331,9 +343,14 @@ function ProcessTimeline(): ReactElement {
                 </div>
 
                 {/* Content */}
-                <div className={`ml-20 md:ml-0 md:w-[calc(50%-4rem)] ${index % 2 === 0 ? 'md:pr-8' : 'md:pl-8'}`}>
+                <div
+                  className={`ml-20 md:ml-0 md:w-[calc(50%-4rem)] ${index % 2 === 0 ? 'md:pr-8' : 'md:pl-8'}`}
+                >
                   <div className="bg-[#0a0a0a]/80 rounded-lg border border-white/5 p-6 hover:border-[#00FF41]/20 transition-all">
-                    <h3 className="text-xl font-bold text-white mb-2" style={{ fontFamily: 'Satoshi, sans-serif' }}>
+                    <h3
+                      className="text-xl font-bold text-white mb-2"
+                      style={{ fontFamily: 'Satoshi, sans-serif' }}
+                    >
                       {phase.title}
                     </h3>
                     <p className="text-white/50 text-sm">{phase.description}</p>
@@ -354,16 +371,18 @@ function ProcessTimeline(): ReactElement {
 function SocialProofSection(): ReactElement {
   const testimonials = [
     {
-      quote: "14 days sounded aggressive. We shipped in 12. The blueprint approach eliminated the usual back-and-forth.",
-      author: "Sarah Chen",
-      role: "VP Product, FinTech Startup",
-      avatar: "SC",
+      quote:
+        '14 days sounded aggressive. We shipped in 12. The blueprint approach eliminated the usual back-and-forth.',
+      author: 'Sarah Chen',
+      role: 'VP Product, FinTech Startup',
+      avatar: 'SC',
     },
     {
-      quote: "Finally, a process that respects our time. No death by committee. Just structured progress.",
-      author: "Marcus Webb",
-      role: "CTO, Healthcare Platform",
-      avatar: "MW",
+      quote:
+        'Finally, a process that respects our time. No death by committee. Just structured progress.',
+      author: 'Marcus Webb',
+      role: 'CTO, Healthcare Platform',
+      avatar: 'MW',
     },
   ];
 
@@ -383,7 +402,9 @@ function SocialProofSection(): ReactElement {
               className="relative bg-[#050505]/80 rounded-lg border border-white/5 p-8"
             >
               {/* Quote mark */}
-              <span className="absolute top-6 right-6 text-4xl text-[#00FF41]/10 font-serif">"</span>
+              <span className="absolute top-6 right-6 text-4xl text-[#00FF41]/10 font-serif">
+                "
+              </span>
 
               <p className="text-white/70 text-lg mb-6 leading-relaxed">{t.quote}</p>
 
@@ -423,12 +444,18 @@ function CTASection(): ReactElement {
           <svg className="absolute -bottom-4 -left-4 w-8 h-8 text-[#00FF41]/30" viewBox="0 0 32 32">
             <path d="M0 20 L0 32 L12 32" fill="none" stroke="currentColor" strokeWidth="2" />
           </svg>
-          <svg className="absolute -bottom-4 -right-4 w-8 h-8 text-[#00FF41]/30" viewBox="0 0 32 32">
+          <svg
+            className="absolute -bottom-4 -right-4 w-8 h-8 text-[#00FF41]/30"
+            viewBox="0 0 32 32"
+          >
             <path d="M20 32 L32 32 L32 20" fill="none" stroke="currentColor" strokeWidth="2" />
           </svg>
 
           <div className="py-16 px-8 border border-[#00FF41]/10 rounded-lg bg-[#050505]/50 backdrop-blur-xl">
-            <h2 className="text-3xl md:text-5xl font-bold text-white mb-4" style={{ fontFamily: 'Satoshi, sans-serif' }}>
+            <h2
+              className="text-3xl md:text-5xl font-bold text-white mb-4"
+              style={{ fontFamily: 'Satoshi, sans-serif' }}
+            >
               Ready to <span className="text-[#00FF41]">Ship</span>?
             </h2>
             <p className="text-lg text-white/50 max-w-2xl mx-auto mb-10 font-light">
@@ -444,8 +471,18 @@ function CTASection(): ReactElement {
                 className="group relative inline-flex items-center justify-center gap-2 px-8 py-4 rounded-lg bg-[#FF5F00] text-[#050505] font-bold text-lg hover:bg-[#FF5F00]/90 transition-all hover:scale-105"
               >
                 <span>Book a Prototype Sprint</span>
-                <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                <svg
+                  className="w-5 h-5 group-hover:translate-x-1 transition-transform"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M17 8l4 4m0 0l-4 4m4-4H3"
+                  />
                 </svg>
               </a>
 
@@ -454,7 +491,12 @@ function CTASection(): ReactElement {
                 className="group inline-flex items-center justify-center gap-2 px-8 py-4 rounded-lg border border-[#00FF41]/30 text-[#00FF41] font-bold text-lg hover:bg-[#00FF41]/5 transition-all"
               >
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  />
                 </svg>
                 <span>Download the Blueprint</span>
               </a>
@@ -493,21 +535,35 @@ export default function ShowroomPage(): ReactElement {
               <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#00FF41]/10 to-transparent animate-[scan_2s_ease-in-out_infinite]" />
             </div>
             <div>
-              <span className="text-lg font-bold text-white" style={{ fontFamily: 'Satoshi, sans-serif' }}>
+              <span
+                className="text-lg font-bold text-white"
+                style={{ fontFamily: 'Satoshi, sans-serif' }}
+              >
                 Kinetic
               </span>
-              <span className="hidden sm:inline text-xs text-white/30 ml-2 font-mono">SHOWROOM</span>
+              <span className="hidden sm:inline text-xs text-white/30 ml-2 font-mono">
+                SHOWROOM
+              </span>
             </div>
           </div>
 
           <div className="hidden md:flex items-center gap-8">
-            <a href="#process" className="font-mono text-xs text-white/50 hover:text-[#00FF41] transition-colors uppercase tracking-wider">
+            <a
+              href="#process"
+              className="font-mono text-xs text-white/50 hover:text-[#00FF41] transition-colors uppercase tracking-wider"
+            >
               Process
             </a>
-            <a href="#proof" className="font-mono text-xs text-white/50 hover:text-[#00FF41] transition-colors uppercase tracking-wider">
+            <a
+              href="#proof"
+              className="font-mono text-xs text-white/50 hover:text-[#00FF41] transition-colors uppercase tracking-wider"
+            >
               Results
             </a>
-            <Link href="/kinetic" className="font-mono text-xs text-white/50 hover:text-[#00FF41] transition-colors uppercase tracking-wider">
+            <Link
+              href="/kinetic"
+              className="font-mono text-xs text-white/50 hover:text-[#00FF41] transition-colors uppercase tracking-wider"
+            >
               Platform
             </Link>
           </div>
@@ -543,7 +599,10 @@ export default function ShowroomPage(): ReactElement {
           </div>
 
           {/* Main Headline */}
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6" style={{ fontFamily: 'Satoshi, sans-serif' }}>
+          <h1
+            className="text-5xl md:text-7xl font-bold tracking-tight mb-6"
+            style={{ fontFamily: 'Satoshi, sans-serif' }}
+          >
             <span className="text-white">Zero to Sign-off</span>
             <br />
             <span className="text-[#00FF41]">in 14 Days</span>
@@ -551,8 +610,8 @@ export default function ShowroomPage(): ReactElement {
 
           {/* Subheadline */}
           <p className="text-xl text-white/50 max-w-2xl mx-auto mb-10 font-light leading-relaxed">
-            Skip the months of discovery theater. Get a working prototype, validated spec, 
-            and implementation roadmap—all in two weeks.
+            Skip the months of discovery theater. Get a working prototype, validated spec, and
+            implementation roadmap—all in two weeks.
           </p>
 
           {/* CTA Group */}
@@ -562,8 +621,18 @@ export default function ShowroomPage(): ReactElement {
               className="group relative inline-flex items-center justify-center gap-2 px-8 py-4 rounded-lg bg-[#FF5F00] text-[#050505] font-bold text-lg hover:bg-[#FF5F00]/90 transition-all hover:scale-105"
             >
               <span>Book a Prototype Sprint</span>
-              <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              <svg
+                className="w-5 h-5 group-hover:translate-x-1 transition-transform"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M17 8l4 4m0 0l-4 4m4-4H3"
+                />
               </svg>
             </a>
 
@@ -572,7 +641,12 @@ export default function ShowroomPage(): ReactElement {
               className="group inline-flex items-center justify-center gap-2 px-8 py-4 rounded-lg border border-[#00FF41]/30 text-[#00FF41] font-bold text-lg hover:bg-[#00FF41]/5 transition-all"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
               </svg>
               <span>Download the Blueprint</span>
             </a>
@@ -617,9 +691,15 @@ export default function ShowroomPage(): ReactElement {
             </span>
           </div>
           <div className="flex gap-6 text-sm font-mono text-white/30">
-            <a href="#" className="hover:text-[#00FF41] transition-colors">Privacy</a>
-            <a href="#" className="hover:text-[#00FF41] transition-colors">Terms</a>
-            <a href="#" className="hover:text-[#00FF41] transition-colors">Contact</a>
+            <a href="#" className="hover:text-[#00FF41] transition-colors">
+              Privacy
+            </a>
+            <a href="#" className="hover:text-[#00FF41] transition-colors">
+              Terms
+            </a>
+            <a href="#" className="hover:text-[#00FF41] transition-colors">
+              Contact
+            </a>
           </div>
         </div>
       </footer>
@@ -627,7 +707,7 @@ export default function ShowroomPage(): ReactElement {
       {/* Global Styles for animations */}
       <style jsx global>{`
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
-        
+
         @font-face {
           font-family: 'Satoshi';
           src: url('https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap');
@@ -636,8 +716,13 @@ export default function ShowroomPage(): ReactElement {
         }
 
         @keyframes scan {
-          0%, 100% { transform: translateY(-100%); }
-          50% { transform: translateY(100%); }
+          0%,
+          100% {
+            transform: translateY(-100%);
+          }
+          50% {
+            transform: translateY(100%);
+          }
         }
 
         .scrollbar-hide {
@@ -649,7 +734,11 @@ export default function ShowroomPage(): ReactElement {
         }
 
         body {
-          font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, sans-serif;
+          font-family:
+            'Satoshi',
+            -apple-system,
+            BlinkMacSystemFont,
+            sans-serif;
         }
 
         .font-mono {

@@ -12,29 +12,15 @@ export const AssetStatusEnum = z.enum([
 
 export type AssetStatus = z.infer<typeof AssetStatusEnum>;
 
-export const AssetTypeEnum = z.enum([
-  'DESIGN',
-  'SPECIFICATION',
-  'PROTOTYPE',
-  'DOCUMENTATION',
-]);
+export const AssetTypeEnum = z.enum(['DESIGN', 'SPECIFICATION', 'PROTOTYPE', 'DOCUMENTATION']);
 
 export type AssetType = z.infer<typeof AssetTypeEnum>;
 
-export const RoleEnum = z.enum([
-  'VIEWER',
-  'CONTRIBUTOR',
-  'REVIEWER',
-  'ADMIN',
-]);
+export const RoleEnum = z.enum(['VIEWER', 'CONTRIBUTOR', 'REVIEWER', 'ADMIN']);
 
 export type Role = z.infer<typeof RoleEnum>;
 
-export const ReviewDecisionEnum = z.enum([
-  'APPROVED',
-  'REJECTED',
-  'CHANGES_REQUESTED',
-]);
+export const ReviewDecisionEnum = z.enum(['APPROVED', 'REJECTED', 'CHANGES_REQUESTED']);
 
 export type ReviewDecision = z.infer<typeof ReviewDecisionEnum>;
 
@@ -65,11 +51,13 @@ export const AssetWithRelationsSchema = AssetSchema.extend({
     name: z.string(),
     email: z.string().email(),
   }),
-  assignee: z.object({
-    id: z.string().uuid(),
-    name: z.string(),
-    email: z.string().email(),
-  }).nullable(),
+  assignee: z
+    .object({
+      id: z.string().uuid(),
+      name: z.string(),
+      email: z.string().email(),
+    })
+    .nullable(),
 });
 
 export type AssetWithRelations = z.infer<typeof AssetWithRelationsSchema>;

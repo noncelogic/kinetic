@@ -49,22 +49,26 @@ pnpm format               # Format with Prettier
 ## Code Style
 
 ### TypeScript
+
 - Strict mode enabled
 - Prefer type inference over explicit annotations
 - Use Zod schemas for runtime validation
 - Export types from `@repo/entities`
 
 ### React
+
 - Server Components by default
 - Client Components only when needed (interactivity)
 - Colocate components with their routes
 
 ### tRPC
+
 - Routers live in `@repo/service/src/routers/`
 - Use `protectedProcedure` for authenticated routes
 - Input validation with Zod schemas from `@repo/entities`
 
 ### Testing
+
 - TDD approach: write failing test first
 - Unit tests for business logic in `@repo/service`
 - Integration tests for tRPC procedures
@@ -76,6 +80,7 @@ pnpm format               # Format with Prettier
 **Focus**: [Describe current work]
 
 ### Implementation Approach
+
 1. Define Zod schema in `@repo/entities`
 2. Write failing test in `@repo/service`
 3. Implement tRPC procedure
@@ -93,6 +98,7 @@ pnpm format               # Format with Prettier
 ## State Management
 
 ### XState for Workflows
+
 Complex application flows use XState machines in `@repo/state`:
 
 ```typescript
@@ -100,7 +106,7 @@ import { useOnboarding } from '@repo/state';
 
 function OnboardingFlow() {
   const [state, send] = useOnboarding();
-  
+
   if (state.matches('emailStep')) {
     return <EmailForm onNext={(email) => {
       send({ type: 'SET_EMAIL', email });
@@ -112,12 +118,14 @@ function OnboardingFlow() {
 ```
 
 **Why XState:**
+
 - States are explicit — no impossible transitions
 - Guards enforce business rules
 - Context is fully typed
 - Agents can't produce invalid state logic
 
 ### TanStack Form + Zod
+
 Forms are driven by Zod schemas in `@repo/forms`:
 
 ```typescript
@@ -130,7 +138,7 @@ function ContactForm() {
       // values is typed from schema
     },
   });
-  
+
   return (
     <form onSubmit={form.handleSubmit}>
       <form.Field name="email">
@@ -152,6 +160,7 @@ This project uses **strict ESLint** to catch agent mistakes:
 - Import ordering enforced
 
 Run before committing:
+
 ```bash
 pnpm lint        # Check
 pnpm lint:fix    # Auto-fix

@@ -1,13 +1,13 @@
-import { setup, assign } from 'xstate';
+import { setup, assign, fromPromise } from 'xstate';
 
 /**
  * Example: Multi-step onboarding flow
- * 
+ *
  * States are explicit — agents can't produce impossible transitions.
  * Context is typed — no hallucinated data shapes.
  */
 
-interface OnboardingContext {
+export interface OnboardingContext {
   userId: string | null;
   step: number;
   email: string;
@@ -37,11 +37,26 @@ export const onboardingMachine = setup({
   },
   actions: {
     incrementStep: assign({ step: ({ context }) => context.step + 1 }),
-    decrementStep: assign({ step: ({ context }) => Math.max(0, context.step - 1) }),
-    setEmail: assign({ email: (_, params: { email: string }) => params.email }),
+    decrementStep: assign({
+      step: ({ context }) => Math.max(0, context.step - 1),
+    }),
+    setEmail: assign({
+      email: (_, params: { email: string }) => params.email,
+    }),
     setName: assign({ name: (_, params: { name: string }) => params.name }),
-    setPlan: assign({ plan: (_, params: { plan: 'free' | 'pro' | 'enterprise' }) => params.plan }),
+    setPlan: assign({
+      plan: (_, params: { plan: 'free' | 'pro' | 'enterprise' }) => params.plan,
+    }),
     clearErrors: assign({ errors: [] }),
+  },
+  actors: {
+    submitOnboarding: fromPromise(
+      async ({ input }: { input: { email: string; name: string; plan: string | null } }) => {
+        // Simulate API call
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        return { userId: `user_${Date.now()}`, ...input };
+      }
+    ),
   },
 }).createMachine({
   id: 'onboarding',
@@ -101,6 +116,11 @@ export const onboardingMachine = setup({
     submitting: {
       invoke: {
         src: 'submitOnboarding',
+        input: ({ context }) => ({
+          email: context.email,
+          name: context.name,
+          plan: context.plan,
+        }),
         onDone: { target: 'complete' },
         onError: { target: 'error' },
       },
