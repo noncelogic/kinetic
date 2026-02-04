@@ -61,10 +61,11 @@ jobs:
       - name: Unit Tests (Vitest)
         run: pnpm test
 
-      - name: Install Playwright Browsers
-        run: pnpm exec playwright install --with-deps
-        working-directory: apps/web/e2e
+      # TODO: Re-enable once e2e is a proper workspace package
+      # - name: Install Playwright Browsers
+      #   run: pnpm exec playwright install --with-deps
+      #   working-directory: apps/web/e2e
 
-      - name: E2E Tests (Playwright)
-        run: pnpm exec playwright test
-        working-directory: apps/web/e2e
+      # - name: E2E Tests (Playwright)
+      #   run: pnpm exec playwright test
+      #   working-directory: apps/web/e2e
