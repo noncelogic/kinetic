@@ -20,6 +20,24 @@ import { useState } from 'react';
 import { trpc } from '@/trpc/client';
 import { UploadDropzone } from '@/utils/uploadthing';
 
+// Inline type to avoid Prisma dependency at build time
+interface MediaJob {
+  id: string;
+  userId: string;
+  prompt: string;
+  status: string;
+  resultUrl: string | null;
+  duration: number | null;
+  aspectRatio: string | null;
+  assetId: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+  asset: {
+    id: string;
+    status: string;
+  } | null;
+}
+
 export default function MediaBankPage() {
   const { data: session } = useSession();
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
@@ -34,7 +52,7 @@ export default function MediaBankPage() {
     refetchInterval: 1000,
   });
 
-  const selectedJob = jobsQuery.data?.find((j) => j.id === selectedJobId);
+  const selectedJob = jobsQuery.data?.find((j: MediaJob) => j.id === selectedJobId);
   const policyQuery = trpc.media.checkPolicy.useQuery(
     { assetId: selectedJob?.assetId ?? '' },
     { enabled: !!selectedJob?.assetId }
@@ -191,7 +209,7 @@ export default function MediaBankPage() {
           <ResizablePanel defaultSize={50}>
             <div className="h-full p-4 overflow-auto">
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {jobsQuery.data?.map((job) => (
+                {jobsQuery.data?.map((job: MediaJob) => (
                   <Card
                     key={job.id}
                     className={`group cursor-pointer transition-colors ${selectedJobId === job.id ? 'border-primary ring-1 ring-primary' : 'hover:border-primary'}`}
