@@ -29,9 +29,7 @@ export default async function BlogIndex(): Promise<ReactElement> {
                   {post.title}
                 </h2>
                 <p className="text-gray-600 mt-2">{post.excerpt}</p>
-                <span className="inline-block mt-3 text-brand-600 font-medium">
-                  Read more →
-                </span>
+                <span className="inline-block mt-3 text-brand-600 font-medium">Read more →</span>
               </Link>
             </article>
           ))}

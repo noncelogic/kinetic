@@ -14,9 +14,7 @@ export function FieldInfo({ field }: FieldInfoProps) {
   return (
     <>
       {field.state.meta.isTouched && field.state.meta.errors.length > 0 && (
-        <p className="text-sm text-red-500 mt-1">
-          {field.state.meta.errors.join(', ')}
-        </p>
+        <p className="text-sm text-red-500 mt-1">{field.state.meta.errors.join(', ')}</p>
       )}
     </>
   );

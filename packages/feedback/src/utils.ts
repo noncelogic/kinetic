@@ -14,9 +14,10 @@ export function captureMetadata(): {
   return {
     url: typeof window !== 'undefined' ? window.location.href : '',
     userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : '',
-    viewport: typeof window !== 'undefined' 
-      ? { width: window.innerWidth, height: window.innerHeight }
-      : { width: 0, height: 0 },
+    viewport:
+      typeof window !== 'undefined'
+        ? { width: window.innerWidth, height: window.innerHeight }
+        : { width: 0, height: 0 },
     timestamp: new Date().toISOString(),
   };
 }

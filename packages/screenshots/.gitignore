@@ -1,0 +1,7 @@
+# Playwright artifacts
+output/
+playwright-report/
+test-results/
+
+# Dependencies
+node_modules/

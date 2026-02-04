@@ -1,7 +1,10 @@
 import { Inter } from 'next/font/google';
+import { SessionProvider } from 'next-auth/react';
 
 import type { Metadata } from 'next';
 import type { ReactElement, ReactNode } from 'react';
+
+import { auth } from '@/auth';
 import { FeedbackWrapper } from '@/components/feedback-wrapper';
 import { TRPCProvider } from '@/trpc/provider';
 
@@ -19,18 +22,21 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: ReactNode;
-}>): ReactElement {
+}>): Promise<ReactElement> {
+  const session = await auth();
   return (
     <html lang="en">
       <body className={inter.className}>
-        <TRPCProvider>
-          {children}
-          <FeedbackWrapper />
-        </TRPCProvider>
+        <SessionProvider session={session}>
+          <TRPCProvider>
+            {children}
+            <FeedbackWrapper />
+          </TRPCProvider>
+        </SessionProvider>
       </body>
     </html>
   );

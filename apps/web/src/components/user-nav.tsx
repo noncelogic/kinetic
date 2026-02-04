@@ -1,16 +1,16 @@
 'use client';
 
-import { 
-  DropdownMenu, 
-  DropdownMenuTrigger, 
-  DropdownMenuContent, 
-  DropdownMenuLabel, 
-  DropdownMenuSeparator, 
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuItem,
   Button,
   Avatar,
   AvatarImage,
-  AvatarFallback
+  AvatarFallback,
 } from '@repo/ui';
 import { LogOut, User as UserIcon } from 'lucide-react';
 import { signIn, signOut, useSession } from 'next-auth/react';
@@ -44,9 +44,7 @@ export function UserNav() {
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">{session.user.name}</p>
-            <p className="text-xs leading-none text-muted-foreground">
-              {session.user.email}
-            </p>
+            <p className="text-xs leading-none text-muted-foreground">{session.user.email}</p>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />

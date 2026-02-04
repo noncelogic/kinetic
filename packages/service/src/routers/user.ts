@@ -1,21 +1,22 @@
-import { router, publicProcedure, protectedProcedure } from '../trpc';
 import { CreateUserSchema, UpdateUserSchema, IdSchema } from '@repo/entities';
 import { z } from 'zod';
 
+import { router, publicProcedure, protectedProcedure } from '../trpc';
+
 export const userRouter = router({
-  getById: publicProcedure
-    .input(IdSchema)
-    .query(async ({ ctx, input }) => {
-      return ctx.prisma.user.findUnique({
-        where: { id: input.id },
-      });
-    }),
+  getById: publicProcedure.input(IdSchema).query(async ({ ctx, input }) => {
+    return ctx.prisma.user.findUnique({
+      where: { id: input.id },
+    });
+  }),
 
   list: publicProcedure
-    .input(z.object({
-      limit: z.number().min(1).max(100).default(20),
-      cursor: z.string().optional(),
-    }))
+    .input(
+      z.object({
+        limit: z.number().min(1).max(100).default(20),
+        cursor: z.string().optional(),
+      })
+    )
     .query(async ({ ctx, input }) => {
       const items = await ctx.prisma.user.findMany({
         take: input.limit + 1,
@@ -32,19 +33,19 @@ export const userRouter = router({
       return { items, nextCursor };
     }),
 
-  create: protectedProcedure
-    .input(CreateUserSchema)
-    .mutation(async ({ ctx, input }) => {
-      return ctx.prisma.user.create({
-        data: input,
-      });
-    }),
+  create: protectedProcedure.input(CreateUserSchema).mutation(async ({ ctx, input }) => {
+    return ctx.prisma.user.create({
+      data: input,
+    });
+  }),
 
   update: protectedProcedure
-    .input(z.object({
-      id: z.string().uuid(),
-      data: UpdateUserSchema,
-    }))
+    .input(
+      z.object({
+        id: z.string().uuid(),
+        data: UpdateUserSchema,
+      })
+    )
     .mutation(async ({ ctx, input }) => {
       return ctx.prisma.user.update({
         where: { id: input.id },
@@ -52,11 +53,9 @@ export const userRouter = router({
       });
     }),
 
-  delete: protectedProcedure
-    .input(IdSchema)
-    .mutation(async ({ ctx, input }) => {
-      return ctx.prisma.user.delete({
-        where: { id: input.id },
-      });
-    }),
+  delete: protectedProcedure.input(IdSchema).mutation(async ({ ctx, input }) => {
+    return ctx.prisma.user.delete({
+      where: { id: input.id },
+    });
+  }),
 });

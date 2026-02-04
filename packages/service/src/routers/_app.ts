@@ -1,9 +1,9 @@
-import { router } from '../trpc'
-import { assetRouter } from './asset'
-import { healthRouter } from './health'
-import { userRouter } from './user'
-import { mediaRouter } from './media'
-import { feedbackRouter } from './feedback'
+import { router } from '../trpc';
+import { assetRouter } from './asset';
+import { feedbackRouter } from './feedback';
+import { healthRouter } from './health';
+import { mediaRouter } from './media';
+import { userRouter } from './user';
 
 export const appRouter = router({
   health: healthRouter,
@@ -11,6 +11,6 @@ export const appRouter = router({
   asset: assetRouter,
   media: mediaRouter,
   feedback: feedbackRouter,
-})
+});
 
-export type AppRouter = typeof appRouter
+export type AppRouter = typeof appRouter;

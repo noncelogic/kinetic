@@ -12,9 +12,9 @@ async function main() {
       role: 'ADMIN',
     },
   });
-  console.log('User seeded');
+  console.warn('User seeded');
 }
 
 main()
-  .catch(e => console.error(e))
+  .catch((e) => console.error(e))
   .finally(async () => await prisma.$disconnect());

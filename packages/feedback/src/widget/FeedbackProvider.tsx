@@ -1,7 +1,9 @@
 'use client';
 
 import * as React from 'react';
+
 import { FeedbackWidget } from './FeedbackWidget';
+
 import type { FeedbackWidgetConfig, FeedbackSubmission } from '../types';
 
 export interface FeedbackProviderProps extends FeedbackWidgetConfig {
@@ -21,11 +23,11 @@ export function useFeedback() {
   return context;
 }
 
-export function FeedbackProvider({ 
-  children, 
+export function FeedbackProvider({
+  children,
   endpoint,
   projectId,
-  ...widgetProps 
+  ...widgetProps
 }: FeedbackProviderProps) {
   const config: FeedbackWidgetConfig = {
     endpoint,
@@ -33,25 +35,28 @@ export function FeedbackProvider({
     ...widgetProps,
   };
 
-  const submitFeedback = React.useCallback(async (submission: FeedbackSubmission) => {
-    const response = await fetch(endpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        projectId,
-        ...submission,
-      }),
-    });
+  const submitFeedback = React.useCallback(
+    async (submission: FeedbackSubmission) => {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          projectId,
+          ...submission,
+        }),
+      });
 
-    if (!response.ok) {
-      const error = await response.text();
-      throw new Error(error || 'Failed to submit feedback');
-    }
+      if (!response.ok) {
+        const error = await response.text();
+        throw new Error(error || 'Failed to submit feedback');
+      }
 
-    return response.json();
-  }, [endpoint, projectId]);
+      return response.json();
+    },
+    [endpoint, projectId]
+  );
 
   return (
     <FeedbackContext.Provider value={{ submitFeedback, config }}>

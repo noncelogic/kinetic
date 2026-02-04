@@ -49,7 +49,7 @@ function ToastContainer({
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between gap-2">
                 <h4 className="font-semibold text-white text-sm truncate">{toast.title}</h4>
-                <button 
+                <button
                   onClick={() => {
                     onDismiss(toast.id);
                   }}
@@ -61,7 +61,7 @@ function ToastContainer({
               <p className="text-slate-300 text-xs mt-1">{toast.description}</p>
               {toast.type === 'processing' && toast.progress !== undefined && (
                 <div className="mt-2 h-1.5 bg-slate-700 rounded-full overflow-hidden">
-                  <div 
+                  <div
                     className="h-full bg-gradient-to-r from-violet-500 to-fuchsia-500 transition-all duration-300 ease-out"
                     style={{ width: `${toast.progress.toString()}%` }}
                   />
@@ -93,19 +93,19 @@ export default function KineticAdminPage(): ReactElement {
   const addToast = useCallback((toast: Omit<Toast, 'id' | 'timestamp'>) => {
     const id = `toast-${Date.now().toString()}-${Math.random().toString(36).slice(2, 8)}`;
     setToasts((prev) => [...prev, { ...toast, id, timestamp: new Date().toISOString() }]);
-    
+
     // Auto-dismiss non-processing toasts after 4s
     if (toast.type !== 'processing') {
       setTimeout(() => {
         setToasts((prev) => prev.filter((t) => t.id !== id));
       }, 4000);
     }
-    
+
     return id;
   }, []);
 
   const updateToast = useCallback((id: string, updates: Partial<Toast>) => {
-    setToasts((prev) => prev.map((t) => t.id === id ? { ...t, ...updates } : t));
+    setToasts((prev) => prev.map((t) => (t.id === id ? { ...t, ...updates } : t)));
   }, []);
 
   const dismissToast = useCallback((id: string) => {
@@ -135,9 +135,9 @@ export default function KineticAdminPage(): ReactElement {
         onStepProgress: (step, idx, total) => {
           setCurrentStep(step);
           setStepIndex(idx);
-          
+
           const progress = Math.round(((idx + 1) / total) * 100);
-          
+
           updateToast(mainToastId, {
             icon: step.icon,
             title: step.label,
@@ -187,7 +187,6 @@ export default function KineticAdminPage(): ReactElement {
       }, 3000);
 
       setResult(genResult);
-
     } catch (error) {
       updateToast(mainToastId, {
         icon: '❌',
@@ -221,12 +220,16 @@ export default function KineticAdminPage(): ReactElement {
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <span className={`
+              <span
+                className={`
                 px-3 py-1.5 rounded-full text-xs font-medium
-                ${isGenerating 
-                  ? 'bg-violet-500/20 text-violet-300 animate-pulse' 
-                  : 'bg-emerald-500/20 text-emerald-300'}
-              `}>
+                ${
+                  isGenerating
+                    ? 'bg-violet-500/20 text-violet-300 animate-pulse'
+                    : 'bg-emerald-500/20 text-emerald-300'
+                }
+              `}
+              >
                 {isGenerating ? '● Processing' : '● Ready'}
               </span>
             </div>
@@ -269,16 +272,30 @@ export default function KineticAdminPage(): ReactElement {
                   disabled={isGenerating || !prompt.trim()}
                   className={`
                     px-8 py-4 rounded-xl font-medium transition-all duration-300
-                    ${isGenerating || !prompt.trim()
-                      ? 'bg-slate-700 text-slate-400 cursor-not-allowed'
-                      : 'bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white hover:shadow-lg hover:shadow-violet-500/25 hover:scale-105'}
+                    ${
+                      isGenerating || !prompt.trim()
+                        ? 'bg-slate-700 text-slate-400 cursor-not-allowed'
+                        : 'bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white hover:shadow-lg hover:shadow-violet-500/25 hover:scale-105'
+                    }
                   `}
                 >
                   {isGenerating ? (
                     <span className="flex items-center gap-2">
                       <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                          fill="none"
+                        />
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        />
                       </svg>
                       Generating...
                     </span>
@@ -303,7 +320,7 @@ export default function KineticAdminPage(): ReactElement {
                   const isActive = step.id === currentStep.id;
                   const isComplete = idx < stepIndex;
                   const isPending = idx > stepIndex;
-                  
+
                   return (
                     <div
                       key={step.id}
@@ -315,7 +332,9 @@ export default function KineticAdminPage(): ReactElement {
                       `}
                     >
                       <div className="text-2xl mb-2">{step.icon}</div>
-                      <h4 className={`text-sm font-medium mb-1 ${isActive ? 'text-violet-300' : isComplete ? 'text-emerald-300' : 'text-slate-400'}`}>
+                      <h4
+                        className={`text-sm font-medium mb-1 ${isActive ? 'text-violet-300' : isComplete ? 'text-emerald-300' : 'text-slate-400'}`}
+                      >
                         {step.label}
                       </h4>
                       <p className="text-xs text-slate-500 line-clamp-2">{step.description}</p>
@@ -369,9 +388,15 @@ export default function KineticAdminPage(): ReactElement {
                         <h3 className="font-medium text-white mb-1">{asset.name}</h3>
                         <p className="text-sm text-slate-400 line-clamp-2">{asset.description}</p>
                         <div className="mt-3 flex items-center gap-2 text-xs text-slate-500">
-                          <span className="px-2 py-0.5 rounded bg-slate-800">{asset.mediaType}</span>
-                          <span className="px-2 py-0.5 rounded bg-slate-800">{asset.aspectRatio}</span>
-                          <span className="px-2 py-0.5 rounded bg-slate-800">seed: {asset.metadata.seed}</span>
+                          <span className="px-2 py-0.5 rounded bg-slate-800">
+                            {asset.mediaType}
+                          </span>
+                          <span className="px-2 py-0.5 rounded bg-slate-800">
+                            {asset.aspectRatio}
+                          </span>
+                          <span className="px-2 py-0.5 rounded bg-slate-800">
+                            seed: {asset.metadata.seed}
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -408,8 +433,8 @@ export default function KineticAdminPage(): ReactElement {
             </div>
             <h3 className="text-white font-medium mb-2">MPC Signing</h3>
             <p className="text-slate-400 text-sm">
-              Multi-party computation ensures no single entity controls the signing key. 
-              Threshold cryptography distributes trust.
+              Multi-party computation ensures no single entity controls the signing key. Threshold
+              cryptography distributes trust.
             </p>
           </div>
           <div className="bg-slate-800/30 rounded-xl border border-slate-700/30 p-6">
@@ -418,8 +443,8 @@ export default function KineticAdminPage(): ReactElement {
             </div>
             <h3 className="text-white font-medium mb-2">NetXD Settlement</h3>
             <p className="text-slate-400 text-sm">
-              Cross-domain atomic settlement enables asset transfers across heterogeneous 
-              networks with cryptographic finality.
+              Cross-domain atomic settlement enables asset transfers across heterogeneous networks
+              with cryptographic finality.
             </p>
           </div>
           <div className="bg-slate-800/30 rounded-xl border border-slate-700/30 p-6">
@@ -428,8 +453,8 @@ export default function KineticAdminPage(): ReactElement {
             </div>
             <h3 className="text-white font-medium mb-2">Deterministic Assets</h3>
             <p className="text-slate-400 text-sm">
-              Preset assets ensure consistent demo behavior. Seeds and parameters 
-              are locked for reproducible outputs.
+              Preset assets ensure consistent demo behavior. Seeds and parameters are locked for
+              reproducible outputs.
             </p>
           </div>
         </div>

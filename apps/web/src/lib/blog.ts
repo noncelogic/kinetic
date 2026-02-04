@@ -36,9 +36,7 @@ export async function getAllPosts(): Promise<Post[]> {
         })
     );
 
-    return posts
-      .filter((p): p is Post => p !== null)
-      .sort((a, b) => (a.date > b.date ? -1 : 1));
+    return posts.filter((p): p is Post => p !== null).sort((a, b) => (a.date > b.date ? -1 : 1));
   } catch {
     return [];
   }

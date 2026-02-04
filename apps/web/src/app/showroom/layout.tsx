@@ -56,9 +56,5 @@ export default function ShowroomLayout({
 }: Readonly<{
   children: ReactNode;
 }>): ReactElement {
-  return (
-    <div className={jetbrainsMono.variable}>
-      {children}
-    </div>
-  );
+  return <div className={jetbrainsMono.variable}>{children}</div>;
 }

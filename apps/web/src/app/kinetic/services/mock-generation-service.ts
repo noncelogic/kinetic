@@ -1,6 +1,6 @@
 /**
  * Mock AI Generation Service for Kinetic Phase 2
- * 
+ *
  * Returns preset assets after a 2-second delay to simulate realistic generation flow.
  * Includes financial simulation toasts for MPC signing and settlement.
  */
@@ -174,9 +174,7 @@ export interface GenerationResult {
  * Simulates AI asset generation with 2-second delay.
  * Fires progress callbacks for each financial simulation step.
  */
-export async function generateAssets(
-  request: GenerationRequest
-): Promise<GenerationResult> {
+export async function generateAssets(request: GenerationRequest): Promise<GenerationResult> {
   const jobId = `job-${Date.now().toString(36)}`;
   const startTime = Date.now();
   const simulationLog: GenerationResult['simulationLog'] = [];
@@ -192,7 +190,7 @@ export async function generateAssets(
       continue;
     }
     const scaledDuration = Math.round(step.durationMs * scaleFactor);
-    
+
     // Fire progress callback
     if (request.onStepProgress !== undefined) {
       request.onStepProgress(step, i, SIMULATION_STEPS.length);

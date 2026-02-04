@@ -27,10 +27,10 @@ export async function generateMediaAsset(input: z.infer<typeof GenerateMediaSche
       entityType: 'GenerationJob',
       entityId: job.id,
       actorId: input.userId,
-      metadata: { 
+      metadata: {
         prompt: input.prompt,
         duration: input.duration,
-        aspectRatio: input.aspectRatio
+        aspectRatio: input.aspectRatio,
       },
     },
   });
@@ -38,7 +38,7 @@ export async function generateMediaAsset(input: z.infer<typeof GenerateMediaSche
   // 3. Simulate Async AI (This would be a queue in prod)
   // For the demo, we fake it "optimistically" or use a timeout if calling from client
   // But since tRPC is req/res, we return the JOB ID and let the client poll.
-  
+
   // Fire-and-forget the "Worker"
   simulateWorker(job.id, input.userId);
 

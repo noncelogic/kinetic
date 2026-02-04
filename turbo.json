@@ -20,11 +20,22 @@
     "test": {
       "cache": false
     },
+    "clean": {
+      "cache": false
+    },
     "db:generate": {
       "cache": false
     },
     "db:push": {
       "cache": false
+    },
+    "clean": {
+      "cache": false
+    },
+    "capture": {
+      "dependsOn": ["^build"],
+      "cache": false,
+      "outputs": ["screenshots/**"]
     }
   }
 }

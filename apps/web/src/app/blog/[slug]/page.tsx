@@ -49,7 +49,7 @@ export default async function BlogPost({ params }: Props): Promise<ReactElement>
           <h1 className="text-4xl font-bold mt-2">{post.title}</h1>
         </header>
 
-        <div 
+        <div
           className="prose prose-lg max-w-none prose-headings:font-semibold prose-a:text-brand-600"
           dangerouslySetInnerHTML={{ __html: post.content }}
         />

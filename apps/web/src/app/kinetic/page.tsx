@@ -8,12 +8,14 @@ import { useState, useEffect, type ReactElement } from 'react';
 // ============================================================================
 function SecretSauceDiagram(): ReactElement {
   const [activeStep, setActiveStep] = useState(0);
-  
+
   useEffect(() => {
     const interval = setInterval(() => {
       setActiveStep((prev) => (prev + 1) % 6);
     }, 2000);
-    return () => { clearInterval(interval); };
+    return () => {
+      clearInterval(interval);
+    };
   }, []);
 
   const steps = [
@@ -38,28 +40,21 @@ function SecretSauceDiagram(): ReactElement {
           <stop offset="50%" stopColor="#D946EF" />
           <stop offset="100%" stopColor="#F97316" />
         </linearGradient>
-        
+
         {/* Glow filter */}
         <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+          <feGaussianBlur stdDeviation="3" result="coloredBlur" />
           <feMerge>
-            <feMergeNode in="coloredBlur"/>
-            <feMergeNode in="SourceGraphic"/>
+            <feMergeNode in="coloredBlur" />
+            <feMergeNode in="SourceGraphic" />
           </feMerge>
         </filter>
 
         {/* Arrow marker */}
-        <marker
-          id="arrowhead"
-          markerWidth="10"
-          markerHeight="7"
-          refX="9"
-          refY="3.5"
-          orient="auto"
-        >
+        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
           <polygon points="0 0, 10 3.5, 0 7" fill="#64748B" />
         </marker>
-        
+
         <marker
           id="arrowheadActive"
           markerWidth="10"
@@ -78,59 +73,59 @@ function SecretSauceDiagram(): ReactElement {
       {/* Arrows - Main flow (horizontal) */}
       <path
         d="M 150 200 L 230 200"
-        stroke={activeStep === 0 ? "url(#flowGradient)" : "#475569"}
-        strokeWidth={activeStep === 0 ? "3" : "2"}
+        stroke={activeStep === 0 ? 'url(#flowGradient)' : '#475569'}
+        strokeWidth={activeStep === 0 ? '3' : '2'}
         fill="none"
-        markerEnd={activeStep === 0 ? "url(#arrowheadActive)" : "url(#arrowhead)"}
+        markerEnd={activeStep === 0 ? 'url(#arrowheadActive)' : 'url(#arrowhead)'}
         className="transition-all duration-500"
-        filter={activeStep === 0 ? "url(#glow)" : "none"}
+        filter={activeStep === 0 ? 'url(#glow)' : 'none'}
       />
       <path
         d="M 330 200 L 410 200"
-        stroke={activeStep === 1 ? "url(#flowGradient)" : "#475569"}
-        strokeWidth={activeStep === 1 ? "3" : "2"}
+        stroke={activeStep === 1 ? 'url(#flowGradient)' : '#475569'}
+        strokeWidth={activeStep === 1 ? '3' : '2'}
         fill="none"
-        markerEnd={activeStep === 1 ? "url(#arrowheadActive)" : "url(#arrowhead)"}
+        markerEnd={activeStep === 1 ? 'url(#arrowheadActive)' : 'url(#arrowhead)'}
         className="transition-all duration-500"
-        filter={activeStep === 1 ? "url(#glow)" : "none"}
+        filter={activeStep === 1 ? 'url(#glow)' : 'none'}
       />
       <path
         d="M 510 200 L 590 200"
-        stroke={activeStep === 2 ? "url(#flowGradient)" : "#475569"}
-        strokeWidth={activeStep === 2 ? "3" : "2"}
+        stroke={activeStep === 2 ? 'url(#flowGradient)' : '#475569'}
+        strokeWidth={activeStep === 2 ? '3' : '2'}
         fill="none"
-        markerEnd={activeStep === 2 ? "url(#arrowheadActive)" : "url(#arrowhead)"}
+        markerEnd={activeStep === 2 ? 'url(#arrowheadActive)' : 'url(#arrowhead)'}
         className="transition-all duration-500"
-        filter={activeStep === 2 ? "url(#glow)" : "none"}
+        filter={activeStep === 2 ? 'url(#glow)' : 'none'}
       />
 
       {/* Arrows - Feedback loop (up, left, down) */}
       <path
         d="M 640 150 L 640 120"
-        stroke={activeStep === 3 ? "url(#flowGradient)" : "#475569"}
-        strokeWidth={activeStep === 3 ? "3" : "2"}
+        stroke={activeStep === 3 ? 'url(#flowGradient)' : '#475569'}
+        strokeWidth={activeStep === 3 ? '3' : '2'}
         fill="none"
-        markerEnd={activeStep === 3 ? "url(#arrowheadActive)" : "url(#arrowhead)"}
+        markerEnd={activeStep === 3 ? 'url(#arrowheadActive)' : 'url(#arrowhead)'}
         className="transition-all duration-500"
-        filter={activeStep === 3 ? "url(#glow)" : "none"}
+        filter={activeStep === 3 ? 'url(#glow)' : 'none'}
       />
       <path
         d="M 590 80 L 330 80"
-        stroke={activeStep === 4 ? "url(#flowGradient)" : "#475569"}
-        strokeWidth={activeStep === 4 ? "3" : "2"}
+        stroke={activeStep === 4 ? 'url(#flowGradient)' : '#475569'}
+        strokeWidth={activeStep === 4 ? '3' : '2'}
         fill="none"
-        markerEnd={activeStep === 4 ? "url(#arrowheadActive)" : "url(#arrowhead)"}
+        markerEnd={activeStep === 4 ? 'url(#arrowheadActive)' : 'url(#arrowhead)'}
         className="transition-all duration-500"
-        filter={activeStep === 4 ? "url(#glow)" : "none"}
+        filter={activeStep === 4 ? 'url(#glow)' : 'none'}
       />
       <path
         d="M 280 120 L 280 150"
-        stroke={activeStep === 5 ? "url(#flowGradient)" : "#475569"}
-        strokeWidth={activeStep === 5 ? "3" : "2"}
+        stroke={activeStep === 5 ? 'url(#flowGradient)' : '#475569'}
+        strokeWidth={activeStep === 5 ? '3' : '2'}
         fill="none"
-        markerEnd={activeStep === 5 ? "url(#arrowheadActive)" : "url(#arrowhead)"}
+        markerEnd={activeStep === 5 ? 'url(#arrowheadActive)' : 'url(#arrowhead)'}
         className="transition-all duration-500"
-        filter={activeStep === 5 ? "url(#glow)" : "none"}
+        filter={activeStep === 5 ? 'url(#glow)' : 'none'}
       />
 
       {/* Step Nodes */}
@@ -141,31 +136,25 @@ function SecretSauceDiagram(): ReactElement {
             cx={step.x}
             cy={step.y}
             r="40"
-            fill={activeStep === index ? "#1E293B" : "#0F172A"}
-            stroke={activeStep === index ? "url(#flowGradient)" : "#334155"}
-            strokeWidth={activeStep === index ? "3" : "2"}
-            filter={activeStep === index ? "url(#glow)" : "none"}
+            fill={activeStep === index ? '#1E293B' : '#0F172A'}
+            stroke={activeStep === index ? 'url(#flowGradient)' : '#334155'}
+            strokeWidth={activeStep === index ? '3' : '2'}
+            filter={activeStep === index ? 'url(#glow)' : 'none'}
           />
-          
+
           {/* Icon */}
-          <text
-            x={step.x}
-            y={step.y - 5}
-            textAnchor="middle"
-            fontSize="24"
-            className="select-none"
-          >
+          <text x={step.x} y={step.y - 5} textAnchor="middle" fontSize="24" className="select-none">
             {step.icon}
           </text>
-          
+
           {/* Label */}
           <text
             x={step.x}
             y={step.y + 70}
             textAnchor="middle"
-            fill={activeStep === index ? "#F8FAFC" : "#94A3B8"}
+            fill={activeStep === index ? '#F8FAFC' : '#94A3B8'}
             fontSize="13"
-            fontWeight={activeStep === index ? "600" : "400"}
+            fontWeight={activeStep === index ? '600' : '400'}
             className="transition-all duration-500"
           >
             {step.label}
@@ -199,14 +188,18 @@ function LoomHeroPlaceholder(): ReactElement {
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         {/* Play button */}
         <div className="w-20 h-20 rounded-full bg-gradient-to-r from-violet-500 to-fuchsia-500 flex items-center justify-center mb-4 shadow-2xl shadow-violet-500/30 hover:scale-110 transition-transform cursor-pointer group">
-          <svg className="w-8 h-8 text-white ml-1 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+          <svg
+            className="w-8 h-8 text-white ml-1 group-hover:scale-110 transition-transform"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
             <path d="M8 5v14l11-7z" />
           </svg>
         </div>
-        
+
         <p className="text-white font-medium text-lg">Watch the Demo</p>
         <p className="text-slate-400 text-sm mt-1">See Kinetic in action (2:30)</p>
-        
+
         {/* Loom badge */}
         <div className="absolute bottom-4 right-4 flex items-center gap-2 px-3 py-1.5 bg-slate-800/80 rounded-lg border border-slate-700/50">
           <svg className="w-4 h-4 text-violet-400" viewBox="0 0 24 24" fill="currentColor">
@@ -218,13 +211,16 @@ function LoomHeroPlaceholder(): ReactElement {
 
       {/* Decorative grid */}
       <div className="absolute inset-0 opacity-10">
-        <div className="w-full h-full" style={{
-          backgroundImage: `
+        <div
+          className="w-full h-full"
+          style={{
+            backgroundImage: `
             linear-gradient(rgba(148, 163, 184, 0.1) 1px, transparent 1px),
             linear-gradient(90deg, rgba(148, 163, 184, 0.1) 1px, transparent 1px)
           `,
-          backgroundSize: '40px 40px'
-        }} />
+            backgroundSize: '40px 40px',
+          }}
+        />
       </div>
     </div>
   );
@@ -243,7 +239,9 @@ interface FeatureCardProps {
 function FeatureCard({ icon, title, description, gradient }: FeatureCardProps): ReactElement {
   return (
     <div className="group relative bg-slate-800/30 rounded-2xl border border-slate-700/30 p-6 hover:border-slate-600/50 transition-all duration-300 hover:scale-[1.02]">
-      <div className={`w-14 h-14 rounded-xl ${gradient} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+      <div
+        className={`w-14 h-14 rounded-xl ${gradient} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}
+      >
         <span className="text-2xl">{icon}</span>
       </div>
       <h3 className="text-white font-semibold text-lg mb-2">{title}</h3>
@@ -268,9 +266,21 @@ export default function KineticMarketingPage(): ReactElement {
             <span className="text-xl font-semibold text-white">Kinetic</span>
           </div>
           <div className="hidden md:flex items-center gap-8">
-            <a href="#how-it-works" className="text-sm text-slate-400 hover:text-white transition-colors">How It Works</a>
-            <a href="#policy-engine" className="text-sm text-slate-400 hover:text-white transition-colors">Policy Engine</a>
-            <a href="#demo" className="text-sm text-slate-400 hover:text-white transition-colors">Demo</a>
+            <a
+              href="#how-it-works"
+              className="text-sm text-slate-400 hover:text-white transition-colors"
+            >
+              How It Works
+            </a>
+            <a
+              href="#policy-engine"
+              className="text-sm text-slate-400 hover:text-white transition-colors"
+            >
+              Policy Engine
+            </a>
+            <a href="#demo" className="text-sm text-slate-400 hover:text-white transition-colors">
+              Demo
+            </a>
           </div>
           <div className="flex items-center gap-4">
             <Link
@@ -289,9 +299,11 @@ export default function KineticMarketingPage(): ReactElement {
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-violet-500/10 border border-violet-500/20 mb-8">
             <span className="w-2 h-2 rounded-full bg-violet-400 animate-pulse" />
-            <span className="text-sm text-violet-300 font-medium">Introducing Kinetic Policy Engine</span>
+            <span className="text-sm text-violet-300 font-medium">
+              Introducing Kinetic Policy Engine
+            </span>
           </div>
-          
+
           {/* Headline */}
           <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6">
             <span className="text-white">Don&apos;t Write Requirements.</span>
@@ -300,13 +312,13 @@ export default function KineticMarketingPage(): ReactElement {
               Run Them.
             </span>
           </h1>
-          
+
           {/* Subheadline */}
           <p className="text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed">
-            Upload your policy documents. Watch them transform into enforceable code. 
-            No translation meetings. No interpretation gaps. Just working software.
+            Upload your policy documents. Watch them transform into enforceable code. No translation
+            meetings. No interpretation gaps. Just working software.
           </p>
-          
+
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
@@ -336,19 +348,17 @@ export default function KineticMarketingPage(): ReactElement {
       <section id="how-it-works" className="py-20 px-6 bg-slate-900/50">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              The Secret Sauce
-            </h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">The Secret Sauce</h2>
             <p className="text-lg text-slate-400 max-w-2xl mx-auto">
-              From PDF to production in a continuous refinement loop. 
-              Your policies become living, breathing software.
+              From PDF to production in a continuous refinement loop. Your policies become living,
+              breathing software.
             </p>
           </div>
-          
+
           {/* Diagram */}
           <div className="bg-slate-800/30 rounded-3xl border border-slate-700/30 p-8 md:p-12">
             <SecretSauceDiagram />
-            
+
             {/* Step descriptions */}
             <div className="grid md:grid-cols-3 gap-6 mt-12 pt-8 border-t border-slate-700/30">
               <div className="text-center">
@@ -385,8 +395,8 @@ export default function KineticMarketingPage(): ReactElement {
               Guardrails That Think
             </h2>
             <p className="text-lg text-slate-400 max-w-2xl mx-auto">
-              The Policy Engine doesn&apos;t just validate—it understands context, 
-              learns from violations, and evolves with your business.
+              The Policy Engine doesn&apos;t just validate—it understands context, learns from
+              violations, and evolves with your business.
             </p>
           </div>
 
@@ -440,8 +450,8 @@ export default function KineticMarketingPage(): ReactElement {
               Translation, Not Code Generation
             </h2>
             <p className="text-lg text-slate-400 max-w-2xl mx-auto">
-              We don&apos;t generate boilerplate. We translate intent into enforcement. 
-              Your policies become the software—not documentation about the software.
+              We don&apos;t generate boilerplate. We translate intent into enforcement. Your
+              policies become the software—not documentation about the software.
             </p>
           </div>
 
@@ -451,25 +461,29 @@ export default function KineticMarketingPage(): ReactElement {
               {
                 step: '01',
                 title: 'Upload Your Policy',
-                description: 'Drop in your compliance docs, approval workflows, or business rules. Any format works.',
+                description:
+                  'Drop in your compliance docs, approval workflows, or business rules. Any format works.',
                 color: 'violet',
               },
               {
                 step: '02',
                 title: 'AI Extracts Rules',
-                description: 'Natural language becomes structured constraints. Ambiguity gets flagged for human review.',
+                description:
+                  'Natural language becomes structured constraints. Ambiguity gets flagged for human review.',
                 color: 'fuchsia',
               },
               {
                 step: '03',
                 title: 'Zod Schemas Generated',
-                description: 'Each rule translates to type-safe validation. Your IDE catches violations before they ship.',
+                description:
+                  'Each rule translates to type-safe validation. Your IDE catches violations before they ship.',
                 color: 'orange',
               },
               {
                 step: '04',
                 title: 'Deploy & Enforce',
-                description: 'Schemas integrate into your Next.js app. Policies become runtime guarantees.',
+                description:
+                  'Schemas integrate into your Next.js app. Policies become runtime guarantees.',
                 color: 'emerald',
               },
             ].map((item) => (
@@ -477,7 +491,9 @@ export default function KineticMarketingPage(): ReactElement {
                 key={item.step}
                 className="flex items-start gap-6 p-6 rounded-2xl bg-slate-800/30 border border-slate-700/30 hover:border-slate-600/50 transition-all group"
               >
-                <div className={`w-14 h-14 rounded-xl bg-${item.color}-500/20 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform`}>
+                <div
+                  className={`w-14 h-14 rounded-xl bg-${item.color}-500/20 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform`}
+                >
                   <span className={`text-${item.color}-400 font-mono font-bold`}>{item.step}</span>
                 </div>
                 <div>
@@ -497,8 +513,8 @@ export default function KineticMarketingPage(): ReactElement {
             Ready to Stop Writing Requirements?
           </h2>
           <p className="text-xl text-slate-400 mb-10 max-w-2xl mx-auto">
-            See the Policy Engine in action. Try the interactive simulator 
-            and watch policies become code.
+            See the Policy Engine in action. Try the interactive simulator and watch policies become
+            code.
           </p>
           <Link
             href="/kinetic/policy-simulator"
@@ -521,9 +537,15 @@ export default function KineticMarketingPage(): ReactElement {
             </span>
           </div>
           <div className="flex gap-6 text-sm text-slate-500">
-            <a href="#" className="hover:text-white transition-colors">Privacy</a>
-            <a href="#" className="hover:text-white transition-colors">Terms</a>
-            <a href="#" className="hover:text-white transition-colors">Contact</a>
+            <a href="#" className="hover:text-white transition-colors">
+              Privacy
+            </a>
+            <a href="#" className="hover:text-white transition-colors">
+              Terms
+            </a>
+            <a href="#" className="hover:text-white transition-colors">
+              Contact
+            </a>
           </div>
         </div>
       </footer>
