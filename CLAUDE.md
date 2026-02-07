@@ -1,7 +1,22 @@
 # Agentic Turbo Starter - Development Guidelines
 
-**Project**: [Your SaaS Name]
+**Project**: Project Kinetic / MediaVault
 **Stack**: Next.js 15 + tRPC + Prisma + Turborepo
+
+## ⚠️ Before Touching Any UI
+
+**Read `DESIGN.md` first.** It defines:
+- Color tokens, typography, spacing
+- Signature effects (grain, glass, particles)
+- Component patterns
+- Anti-patterns to avoid
+
+Reference designs live in `~/designs/v2/*.html` — open in browser for visual context.
+
+**Rules:**
+1. Use only tokens from DESIGN.md — never invent colors or spacing
+2. If a pattern appears 3x, extract to component library
+3. New tokens/patterns → add to DESIGN.md first, then implement
 
 ## Project Structure
 
