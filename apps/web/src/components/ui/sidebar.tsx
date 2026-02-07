@@ -15,6 +15,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { signOut, useSession } from 'next-auth/react';
 
+import type { Route } from 'next';
 import type { ReactElement, ReactNode } from 'react';
 
 interface NavItem {
@@ -90,7 +91,7 @@ export function Sidebar(): ReactElement {
                 return (
                   <Link
                     key={item.href}
-                    href={item.href as unknown as string}
+                    href={item.href as Route}
                     className={`
                       flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all relative
                       ${

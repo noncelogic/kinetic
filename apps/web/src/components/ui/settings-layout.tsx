@@ -4,6 +4,7 @@ import { User, Palette, CreditCard, Bell, Shield, Key } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
+import type { Route } from 'next';
 import type { ReactElement, ReactNode } from 'react';
 
 const settingsNav = [
@@ -40,7 +41,7 @@ export function SettingsLayout({ children }: SettingsLayoutProps): ReactElement 
               return (
                 <li key={item.href}>
                   <Link
-                    href={item.href as unknown as string}
+                    href={item.href as Route}
                     className={`
                       flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all
                       ${
