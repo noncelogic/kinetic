@@ -187,3 +187,119 @@ pnpm lint:fix    # Auto-fix
 2. **Form schemas**: Start with Zod schema, form derives from it
 3. **Lint early**: Run `pnpm lint` after changes to catch mistakes
 4. **Type errors = stop**: Don't proceed if `pnpm typecheck` fails
+
+---
+
+## 🚦 Quality Gates
+
+### Before EVERY Commit
+
+Run these checks locally. Don't push and pray.
+
+```bash
+pnpm typecheck       # Types must pass
+pnpm lint            # Lint must pass
+pnpm test            # Tests must pass
+pnpm format          # Format code
+```
+
+Or use the preflight script:
+```bash
+./scripts/preflight.sh
+```
+
+### Before EVERY Push
+
+Full verification suite:
+
+```bash
+./scripts/preflight.sh   # Runs: install, db:generate, typecheck, lint, test, build
+```
+
+### Pre-Push Checklist
+
+- [ ] Did I run `./scripts/preflight.sh`?
+- [ ] Did I check for debug code? (`console.log`, `debugger`, `.only`)
+- [ ] Did I update tests for changed behavior?
+- [ ] If I touched Prisma schema, did I run `pnpm db:generate`?
+- [ ] If I changed shared packages, did I check downstream consumers?
+- [ ] Does my commit message explain WHY, not just WHAT?
+
+### When CI Fails
+
+1. **READ** the full error (not just the first line)
+2. **REPRODUCE** locally (pull fresh, `pnpm install`, run failing command)
+3. **FIX** the root cause (not just the symptom)
+4. **VERIFY** with full suite locally (`./scripts/preflight.sh`)
+5. **PUSH** a single fix commit (not multiple "fix lint" commits)
+
+### Common CI Failures
+
+| Error | Likely Cause | Fix |
+|-------|--------------|-----|
+| Type error | Missing types, wrong imports | `pnpm typecheck` locally |
+| ESLint error | Unused var, `any`, floating promise | `pnpm lint --fix` |
+| Test failed | Logic broke, mock outdated | `pnpm test` locally |
+| Build failed | SSR issue, missing env var | `pnpm build` locally |
+| Prisma error | Schema changed, client stale | `pnpm db:generate` |
+| Module not found | Missing dep, wrong path | Check imports, `pnpm install` |
+
+### Anti-Patterns ❌
+
+| Don't | Do Instead |
+|-------|------------|
+| Push and pray | Run `./scripts/preflight.sh` first |
+| Multiple "fix lint" commits | Single commit that passes everything |
+| Fix only the failing test | Verify full suite passes |
+| Ignore type errors | Stop and fix before continuing |
+| Hardcode values to pass tests | Fix the actual issue |
+
+---
+
+## 🛠️ Helper Scripts
+
+| Script | Purpose |
+|--------|---------|
+| `./scripts/preflight.sh` | Full quality gate (install → typecheck → lint → test → build) |
+| `./scripts/db-status.sh` | Check database connection and migration status |
+| `./scripts/branch-setup.sh <name>` | Create new branch from latest main with validation |
+
+---
+
+## 🔄 Monorepo Gotchas
+
+### Shared Package Changes Ripple
+
+When you change `@repo/ui`, `@repo/entities`, or `@repo/database`:
+- All consumers rebuild
+- All consumer tests rerun
+- Check downstream: `pnpm build --filter=...^@repo/ui`
+
+### Prisma Client Location
+
+After changing `packages/database/prisma/schema.prisma`:
+```bash
+pnpm db:generate   # ALWAYS run this
+```
+
+The client is generated to `node_modules/.prisma/client`. Forgetting this causes runtime errors.
+
+### Environment Variables
+
+| Location | Purpose |
+|----------|---------|
+| `.env` (root) | Tooling, scripts |
+| `apps/web/.env` | Next.js app runtime |
+| Vercel dashboard | Production env vars |
+
+Next.js apps don't inherit root `.env` — each app needs its own.
+
+### Turbo Cache
+
+If something weird happens:
+```bash
+pnpm turbo run build --force   # Skip cache
+# or nuclear:
+rm -rf .turbo node_modules/.cache
+pnpm install
+```
