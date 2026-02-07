@@ -1,4 +1,4 @@
-import { Inter } from 'next/font/google';
+import { Space_Grotesk, JetBrains_Mono } from 'next/font/google';
 import { SessionProvider } from 'next-auth/react';
 
 import type { Metadata } from 'next';
@@ -10,14 +10,26 @@ import { TRPCProvider } from '@/trpc/provider';
 
 import './globals.css';
 
-const inter = Inter({ subsets: ['latin'] });
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  variable: '--font-display',
+  display: 'swap',
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  variable: '--font-mono',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
-  title: 'NonceLogic',
-  description: 'AI Governance and Generation',
+  title: 'Kinetic — AI Policy Engine',
+  description:
+    'Ship AI features without the risk. Enterprise-grade AI governance with built-in policy enforcement.',
   openGraph: {
-    title: 'NonceLogic',
-    description: 'AI Governance and Generation',
+    title: 'Kinetic — AI Policy Engine',
+    description:
+      'Ship AI features without the risk. Enterprise-grade AI governance with built-in policy enforcement.',
     type: 'website',
   },
 };
@@ -29,8 +41,14 @@ export default async function RootLayout({
 }>): Promise<ReactElement> {
   const session = await auth();
   return (
-    <html lang="en">
-      <body className={inter.className}>
+    <html lang="en" className="dark">
+      <body className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} font-sans antialiased`}>
+        {/* Grain overlay for texture */}
+        <div className="grain" aria-hidden="true" />
+
+        {/* Mesh gradient background */}
+        <div className="mesh-bg" aria-hidden="true" />
+
         <SessionProvider session={session}>
           <TRPCProvider>
             {children}
