@@ -14,6 +14,7 @@ When you hit an error, check here first. If you solve something new, add it.
 **Cause**: Prisma engine binary not bundled by Next.js in monorepo
 
 **Fix**:
+
 1. Add to `packages/database/prisma/schema.prisma`:
    ```prisma
    generator client {
@@ -24,7 +25,7 @@ When you hit an error, check here first. If you solve something new, add it.
    ```
 2. Add to `apps/web/next.config.ts`:
    ```typescript
-   serverExternalPackages: ["@prisma/client", "@repo/database"]
+   serverExternalPackages: ['@prisma/client', '@repo/database'];
    ```
 3. Redeploy **without** build cache
 
@@ -37,7 +38,8 @@ When you hit an error, check here first. If you solve something new, add it.
 **When**: After schema change
 **Cause**: Prisma client not regenerated
 
-**Fix**: 
+**Fix**:
+
 ```bash
 pnpm db:generate
 ```
@@ -52,6 +54,7 @@ pnpm db:generate
 **Cause**: Vercel doesn't know which app to build
 
 **Fix**:
+
 1. Set Root Directory to `apps/web` in Vercel dashboard
 2. Enable "Include files outside root directory"
 3. Leave Build Command and Output Directory at defaults
@@ -66,6 +69,7 @@ pnpm db:generate
 **Cause**: Redirect URI not registered in OAuth provider
 
 **Fix**:
+
 1. Go to GCP Console → APIs & Services → Credentials
 2. Add new domain to JavaScript Origins
 3. Add callback URL to Redirect URIs: `https://<domain>/api/auth/callback/google`
@@ -80,10 +84,13 @@ pnpm db:generate
 **Cause**: Using `npx` instead of `pnpm` in husky hook
 
 **Fix**: Change `.husky/pre-commit` from:
+
 ```bash
 npx lint-staged
 ```
+
 to:
+
 ```bash
 pnpm lint-staged
 ```
@@ -100,6 +107,7 @@ pnpm lint-staged
 **Cause**: Turbo cache serving old build
 
 **Fix**:
+
 ```bash
 pnpm turbo run build --force
 # or nuclear:

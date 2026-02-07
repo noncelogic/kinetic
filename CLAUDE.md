@@ -6,6 +6,7 @@
 ## ⚠️ Before Touching Any UI
 
 **Read `DESIGN.md` first.** It defines:
+
 - Color tokens, typography, spacing
 - Signature effects (grain, glass, particles)
 - Component patterns
@@ -14,6 +15,7 @@
 Reference designs live in `~/designs/v2/*.html` — open in browser for visual context.
 
 **Rules:**
+
 1. Use only tokens from DESIGN.md — never invent colors or spacing
 2. If a pattern appears 3x, extract to component library
 3. New tokens/patterns → add to DESIGN.md first, then implement
@@ -204,6 +206,7 @@ pnpm format          # Format code
 ```
 
 Or use the preflight script:
+
 ```bash
 ./scripts/preflight.sh
 ```
@@ -235,34 +238,34 @@ Full verification suite:
 
 ### Common CI Failures
 
-| Error | Likely Cause | Fix |
-|-------|--------------|-----|
-| Type error | Missing types, wrong imports | `pnpm typecheck` locally |
-| ESLint error | Unused var, `any`, floating promise | `pnpm lint --fix` |
-| Test failed | Logic broke, mock outdated | `pnpm test` locally |
-| Build failed | SSR issue, missing env var | `pnpm build` locally |
-| Prisma error | Schema changed, client stale | `pnpm db:generate` |
-| Module not found | Missing dep, wrong path | Check imports, `pnpm install` |
+| Error            | Likely Cause                        | Fix                           |
+| ---------------- | ----------------------------------- | ----------------------------- |
+| Type error       | Missing types, wrong imports        | `pnpm typecheck` locally      |
+| ESLint error     | Unused var, `any`, floating promise | `pnpm lint --fix`             |
+| Test failed      | Logic broke, mock outdated          | `pnpm test` locally           |
+| Build failed     | SSR issue, missing env var          | `pnpm build` locally          |
+| Prisma error     | Schema changed, client stale        | `pnpm db:generate`            |
+| Module not found | Missing dep, wrong path             | Check imports, `pnpm install` |
 
 ### Anti-Patterns ❌
 
-| Don't | Do Instead |
-|-------|------------|
-| Push and pray | Run `./scripts/preflight.sh` first |
-| Multiple "fix lint" commits | Single commit that passes everything |
-| Fix only the failing test | Verify full suite passes |
-| Ignore type errors | Stop and fix before continuing |
-| Hardcode values to pass tests | Fix the actual issue |
+| Don't                         | Do Instead                           |
+| ----------------------------- | ------------------------------------ |
+| Push and pray                 | Run `./scripts/preflight.sh` first   |
+| Multiple "fix lint" commits   | Single commit that passes everything |
+| Fix only the failing test     | Verify full suite passes             |
+| Ignore type errors            | Stop and fix before continuing       |
+| Hardcode values to pass tests | Fix the actual issue                 |
 
 ---
 
 ## 🛠️ Helper Scripts
 
-| Script | Purpose |
-|--------|---------|
-| `./scripts/preflight.sh` | Full quality gate (install → typecheck → lint → test → build) |
-| `./scripts/db-status.sh` | Check database connection and migration status |
-| `./scripts/branch-setup.sh <name>` | Create new branch from latest main with validation |
+| Script                             | Purpose                                                       |
+| ---------------------------------- | ------------------------------------------------------------- |
+| `./scripts/preflight.sh`           | Full quality gate (install → typecheck → lint → test → build) |
+| `./scripts/db-status.sh`           | Check database connection and migration status                |
+| `./scripts/branch-setup.sh <name>` | Create new branch from latest main with validation            |
 
 ---
 
@@ -271,6 +274,7 @@ Full verification suite:
 ### Shared Package Changes Ripple
 
 When you change `@repo/ui`, `@repo/entities`, or `@repo/database`:
+
 - All consumers rebuild
 - All consumer tests rerun
 - Check downstream: `pnpm build --filter=...^@repo/ui`
@@ -278,6 +282,7 @@ When you change `@repo/ui`, `@repo/entities`, or `@repo/database`:
 ### Prisma Client Location
 
 After changing `packages/database/prisma/schema.prisma`:
+
 ```bash
 pnpm db:generate   # ALWAYS run this
 ```
@@ -286,10 +291,10 @@ The client is generated to `node_modules/.prisma/client`. Forgetting this causes
 
 ### Environment Variables
 
-| Location | Purpose |
-|----------|---------|
-| `.env` (root) | Tooling, scripts |
-| `apps/web/.env` | Next.js app runtime |
+| Location         | Purpose             |
+| ---------------- | ------------------- |
+| `.env` (root)    | Tooling, scripts    |
+| `apps/web/.env`  | Next.js app runtime |
 | Vercel dashboard | Production env vars |
 
 Next.js apps don't inherit root `.env` — each app needs its own.
@@ -297,6 +302,7 @@ Next.js apps don't inherit root `.env` — each app needs its own.
 ### Turbo Cache
 
 If something weird happens:
+
 ```bash
 pnpm turbo run build --force   # Skip cache
 # or nuclear:

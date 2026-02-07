@@ -6,19 +6,19 @@ Track things we know should be fixed. Review periodically and tackle when there'
 
 ## Active Debt
 
-| ID | Description | Impact | Effort | Added | Status |
-|----|-------------|--------|--------|-------|--------|
-| TD-001 | ESLint config too permissive | Medium | Small | 2026-02-04 | Open |
-| TD-002 | E2E tests not in CI pipeline | High | Medium | 2026-02-04 | Open |
-| TD-003 | No seed data for dev DB | Medium | Small | 2026-02-07 | Open |
-| TD-004 | Missing loading states in UI | Low | Medium | 2026-02-07 | Open |
+| ID     | Description                  | Impact | Effort | Added      | Status |
+| ------ | ---------------------------- | ------ | ------ | ---------- | ------ |
+| TD-001 | ESLint config too permissive | Medium | Small  | 2026-02-04 | Open   |
+| TD-002 | E2E tests not in CI pipeline | High   | Medium | 2026-02-04 | Open   |
+| TD-003 | No seed data for dev DB      | Medium | Small  | 2026-02-07 | Open   |
+| TD-004 | Missing loading states in UI | Low    | Medium | 2026-02-07 | Open   |
 
 ---
 
 ## Resolved Debt
 
-| ID | Description | Resolved | How |
-|----|-------------|----------|-----|
+| ID     | Description             | Resolved   | How              |
+| ------ | ----------------------- | ---------- | ---------------- |
 | TD-000 | Husky pre-commit broken | 2026-02-07 | Fixed npx → pnpm |
 
 ---
