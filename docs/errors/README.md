@@ -134,3 +134,18 @@ When you solve a new error, add it here:
 
 **Commit**: [reference commit if applicable]
 ```
+
+---
+
+## Meta: Preflight Drift
+
+### Preflight passes but CI fails
+
+**When**: After running `./scripts/preflight.sh` successfully, CI still fails
+**Cause**: Preflight doesn't match CI exactly
+
+**Fix**: Compare `scripts/preflight.sh` with `.github/workflows/ci.yml` and add missing steps
+
+**Example**: CI runs `format:check` but preflight didn't include it. Added in commit `71f686f`.
+
+**Lesson**: Preflight must exactly mirror CI. If CI runs it, preflight must run it.
