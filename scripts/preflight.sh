@@ -30,19 +30,25 @@ echo -e "${GREEN}✓ Types OK${NC}"
 echo ""
 
 # Step 4: Lint
-echo -e "${YELLOW}🧹 Step 4/6: Linting...${NC}"
+echo -e "${YELLOW}🧹 Step 4/7: Linting...${NC}"
 pnpm lint
 echo -e "${GREEN}✓ Lint OK${NC}"
 echo ""
 
-# Step 5: Tests
-echo -e "${YELLOW}🧪 Step 5/6: Running tests...${NC}"
+# Step 5: Format check
+echo -e "${YELLOW}📐 Step 5/7: Checking formatting...${NC}"
+pnpm format:check
+echo -e "${GREEN}✓ Format OK${NC}"
+echo ""
+
+# Step 6: Tests
+echo -e "${YELLOW}🧪 Step 6/7: Running tests...${NC}"
 pnpm test
 echo -e "${GREEN}✓ Tests OK${NC}"
 echo ""
 
-# Step 6: Build
-echo -e "${YELLOW}🏗️  Step 6/6: Building...${NC}"
+# Step 7: Build
+echo -e "${YELLOW}🏗️  Step 7/7: Building...${NC}"
 pnpm build
 echo -e "${GREEN}✓ Build OK${NC}"
 echo ""
