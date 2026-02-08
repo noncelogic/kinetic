@@ -2,7 +2,6 @@
 
 import {
   LayoutDashboard,
-  Shield,
   Settings,
   Users,
   BarChart3,

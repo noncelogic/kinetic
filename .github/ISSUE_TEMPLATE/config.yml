@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentation
+    url: https://github.com/noncelogic/kinetic#readme
+    about: Check the README for setup instructions
+  - name: Discussions
+    url: https://github.com/noncelogic/kinetic/discussions
+    about: Ask questions and discuss ideas

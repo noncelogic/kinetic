@@ -1,15 +1,6 @@
 'use client';
 
-import {
-  Activity,
-  Users,
-  Clock,
-  TrendingUp,
-  ArrowUpRight,
-  BarChart3,
-  Settings,
-  FileText,
-} from 'lucide-react';
+import { Activity, Users, Clock, TrendingUp, BarChart3, Settings, FileText } from 'lucide-react';
 import Link from 'next/link';
 
 import type { Route } from 'next';
@@ -19,10 +10,34 @@ import { PageContent, PageHeader, StatCard, StatGrid, Section } from '@/componen
 
 // Sample data - replace with real data
 const recentActivity = [
-  { id: 1, type: 'success', action: 'User signed up', details: 'john@example.com', time: '2 minutes ago' },
-  { id: 2, type: 'info', action: 'Settings updated', details: 'Notification preferences', time: '15 minutes ago' },
-  { id: 3, type: 'success', action: 'API key created', details: 'Production key', time: '1 hour ago' },
-  { id: 4, type: 'info', action: 'Report generated', details: 'Weekly summary', time: '2 hours ago' },
+  {
+    id: 1,
+    type: 'success',
+    action: 'User signed up',
+    details: 'john@example.com',
+    time: '2 minutes ago',
+  },
+  {
+    id: 2,
+    type: 'info',
+    action: 'Settings updated',
+    details: 'Notification preferences',
+    time: '15 minutes ago',
+  },
+  {
+    id: 3,
+    type: 'success',
+    action: 'API key created',
+    details: 'Production key',
+    time: '1 hour ago',
+  },
+  {
+    id: 4,
+    type: 'info',
+    action: 'Report generated',
+    details: 'Weekly summary',
+    time: '2 hours ago',
+  },
 ];
 
 const activityColors = {
@@ -35,10 +50,7 @@ const activityColors = {
 export default function DashboardPage(): ReactElement {
   return (
     <PageContent>
-      <PageHeader
-        title="Dashboard"
-        description="Overview of your application"
-      />
+      <PageHeader title="Dashboard" description="Overview of your application" />
 
       {/* Stats Grid */}
       <Section>
@@ -93,13 +105,9 @@ export default function DashboardPage(): ReactElement {
               </div>
               <div className="flex-1 min-w-0">
                 <div className="text-sm font-medium">{item.action}</div>
-                <div className="text-xs text-[var(--text-muted)] truncate">
-                  {item.details}
-                </div>
+                <div className="text-xs text-[var(--text-muted)] truncate">{item.details}</div>
               </div>
-              <div className="text-xs text-[var(--text-muted)] flex-shrink-0">
-                {item.time}
-              </div>
+              <div className="text-xs text-[var(--text-muted)] flex-shrink-0">{item.time}</div>
             </div>
           ))}
         </div>
