@@ -1,0 +1,43 @@
+<svg width="800" height="200" viewBox="0 0 800 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0a0b"/>
+      <stop offset="100%" stop-color="#18181b"/>
+    </linearGradient>
+    <linearGradient id="accent-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#22d3ee"/>
+      <stop offset="100%" stop-color="#0891b2"/>
+    </linearGradient>
+    <linearGradient id="text-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#fafafa"/>
+      <stop offset="100%" stop-color="#e4e4e7"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="800" height="200" fill="url(#bg-gradient)"/>
+  
+  <!-- Subtle grid pattern -->
+  <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+  </pattern>
+  <rect width="800" height="200" fill="url(#grid)"/>
+  
+  <!-- Logo mark (Geometric K) -->
+  <g transform="translate(280, 60)">
+    <path d="M0 0H12V24L32 0H48L20 28L48 56H32L12 32V56H0V0Z" fill="url(#accent-gradient)" transform="scale(1.4)"/>
+  </g>
+  
+  <!-- Wordmark -->
+  <text x="370" y="115" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="48" font-weight="700" fill="url(#text-gradient)" letter-spacing="-2">
+    KINETIC
+  </text>
+  
+  <!-- Tagline -->
+  <text x="400" y="150" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="16" fill="#71717a" text-anchor="middle">
+    AI Governance Guardrails
+  </text>
+  
+  <!-- Decorative accent line -->
+  <rect x="340" y="165" width="120" height="2" rx="1" fill="url(#accent-gradient)" opacity="0.5"/>
+</svg>

@@ -1,0 +1,13 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Concept 2: Stacked chevrons (motion/speed) -->
+  <defs>
+    <linearGradient id="kinetic-grad-2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#22d3ee"/>
+      <stop offset="100%" stop-color="#06b6d4"/>
+    </linearGradient>
+  </defs>
+  <!-- Three chevrons suggesting forward motion -->
+  <path d="M12 32L28 16L28 24L16 32L28 40L28 48L12 32Z" fill="url(#kinetic-grad-2)" opacity="0.4"/>
+  <path d="M24 32L40 16L40 24L28 32L40 40L40 48L24 32Z" fill="url(#kinetic-grad-2)" opacity="0.7"/>
+  <path d="M36 32L52 16L52 24L40 32L52 40L52 48L36 32Z" fill="url(#kinetic-grad-2)"/>
+</svg>

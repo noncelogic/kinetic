@@ -16,9 +16,19 @@ export default async function Home(): Promise<ReactElement> {
       <nav className="nav-glass fixed top-0 w-full z-50">
         <div className="max-w-[1400px] mx-auto px-8 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-gradient-to-br from-accent to-accent-dim rounded-lg flex items-center justify-center text-[var(--bg-primary)] font-bold text-sm">
-              K
-            </div>
+            <svg width="32" height="32" viewBox="0 0 64 64" fill="none" className="flex-shrink-0">
+              <rect
+                x="6"
+                y="6"
+                width="52"
+                height="52"
+                rx="12"
+                stroke="#f59e0b"
+                strokeWidth="3"
+                fill="none"
+              />
+              <path d="M20 16H26V30L40 16H48L30 34L48 48H40L26 34V48H20V16Z" fill="#f59e0b" />
+            </svg>
             <span className="font-semibold text-lg tracking-tight">Kinetic</span>
           </Link>
 
