@@ -9,7 +9,7 @@
     "capture:update": "playwright test --project=screenshots --update-snapshots"
   },
   "devDependencies": {
-    "@playwright/test": "^1.52.0",
+    "@playwright/test": "^1.58.2",
     "@types/node": "^22.0.0"
   }
 }
