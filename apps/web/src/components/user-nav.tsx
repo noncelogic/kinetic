@@ -24,7 +24,12 @@ export function UserNav() {
 
   if (!session?.user) {
     return (
-      <Button variant="outline" size="sm" onClick={() => signIn('google')}>
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={() => signIn('google')}
+        className="btn-secondary"
+      >
         Sign In
       </Button>
     );
