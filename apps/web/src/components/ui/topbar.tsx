@@ -11,7 +11,7 @@ interface TopbarProps {
 
 export function Topbar({ title, children }: TopbarProps): ReactElement {
   return (
-    <header className="sticky top-0 z-40 px-8 py-4 bg-[rgba(10,10,11,0.8)] backdrop-blur-xl border-b border-[var(--border)] flex items-center justify-between gap-8">
+    <header className="sticky top-0 z-40 px-8 py-4 bg-[rgba(10,10,11,0.8)] backdrop-blur-xl flex items-center justify-between gap-8">
       {/* Left side - Title or Search */}
       <div className="flex-1 max-w-xl">
         {title ? (

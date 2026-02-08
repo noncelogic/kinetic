@@ -67,9 +67,9 @@ export function Sidebar(): ReactElement {
   };
 
   return (
-    <aside className="w-[260px] bg-[var(--bg-secondary)] border-r border-[var(--border)] fixed top-0 left-0 h-screen z-50 flex flex-col">
+    <aside className="w-[260px] bg-[var(--bg-secondary)] fixed top-0 left-0 h-screen z-50 flex flex-col">
       {/* Logo */}
-      <div className="p-5 border-b border-[var(--border)]">
+      <div className="p-5">
         <Link href="/" className="flex items-center gap-3">
           <svg width="32" height="32" viewBox="0 0 64 64" fill="none" className="flex-shrink-0">
             <rect
