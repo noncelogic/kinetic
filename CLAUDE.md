@@ -1,6 +1,6 @@
-# Agentic Turbo Starter - Development Guidelines
+# Kinetic - Development Guidelines
 
-**Project**: Project Kinetic / MediaVault
+**Project**: Kinetic
 **Stack**: Next.js 15 + tRPC + Prisma + Turborepo
 
 ## ⚠️ Before Touching Any UI
