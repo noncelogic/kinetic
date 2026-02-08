@@ -3,11 +3,11 @@ import type { ReactElement, ReactNode } from 'react';
 import { AppShell } from '@/components/ui/sidebar';
 import { Topbar } from '@/components/ui/topbar';
 
-interface KineticLayoutProps {
+interface AppLayoutProps {
   children: ReactNode;
 }
 
-export default function KineticLayout({ children }: KineticLayoutProps): ReactElement {
+export default function AppLayout({ children }: AppLayoutProps): ReactElement {
   return (
     <AppShell>
       <Topbar />

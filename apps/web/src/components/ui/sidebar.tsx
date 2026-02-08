@@ -34,23 +34,22 @@ const navigation: NavSection[] = [
   {
     label: 'Overview',
     items: [
-      { label: 'Dashboard', href: '/kinetic', icon: LayoutDashboard },
-      { label: 'Policy Simulator', href: '/kinetic/policy-simulator', icon: Shield },
-      { label: 'Analytics', href: '/kinetic/analytics', icon: BarChart3 },
+      { label: 'Dashboard', href: '/app', icon: LayoutDashboard },
+      { label: 'Analytics', href: '/app/analytics', icon: BarChart3 },
     ],
   },
   {
     label: 'Management',
     items: [
-      { label: 'Admin', href: '/kinetic/admin', icon: Users },
-      { label: 'Audit Logs', href: '/kinetic/audit', icon: FileText },
+      { label: 'Admin', href: '/app/admin', icon: Users },
+      { label: 'Logs', href: '/app/logs', icon: FileText },
     ],
   },
   {
     label: 'Settings',
     items: [
-      { label: 'Profile', href: '/kinetic/settings/profile', icon: Settings },
-      { label: 'Notifications', href: '/kinetic/settings/notifications', icon: Bell },
+      { label: 'Profile', href: '/app/settings/profile', icon: Settings },
+      { label: 'Notifications', href: '/app/settings/notifications', icon: Bell },
     ],
   },
 ];
@@ -60,8 +59,8 @@ export function Sidebar(): ReactElement {
   const { data: session } = useSession();
 
   const isActive = (href: string) => {
-    if (href === '/kinetic') {
-      return pathname === '/kinetic';
+    if (href === '/app') {
+      return pathname === '/app';
     }
     return pathname.startsWith(href);
   };

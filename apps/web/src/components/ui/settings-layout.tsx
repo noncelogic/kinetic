@@ -8,12 +8,12 @@ import type { Route } from 'next';
 import type { ReactElement, ReactNode } from 'react';
 
 const settingsNav = [
-  { label: 'Profile', href: '/kinetic/settings/profile', icon: User },
-  { label: 'Appearance', href: '/kinetic/settings/appearance', icon: Palette },
-  { label: 'Billing', href: '/kinetic/settings/billing', icon: CreditCard },
-  { label: 'Notifications', href: '/kinetic/settings/notifications', icon: Bell },
-  { label: 'Security', href: '/kinetic/settings/security', icon: Shield },
-  { label: 'API Keys', href: '/kinetic/settings/api-keys', icon: Key },
+  { label: 'Profile', href: '/app/settings/profile', icon: User },
+  { label: 'Appearance', href: '/app/settings/appearance', icon: Palette },
+  { label: 'Billing', href: '/app/settings/billing', icon: CreditCard },
+  { label: 'Notifications', href: '/app/settings/notifications', icon: Bell },
+  { label: 'Security', href: '/app/settings/security', icon: Shield },
+  { label: 'API Keys', href: '/app/settings/api-keys', icon: Key },
 ];
 
 interface SettingsLayoutProps {

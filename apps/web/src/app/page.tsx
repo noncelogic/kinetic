@@ -53,7 +53,7 @@ export default async function Home(): Promise<ReactElement> {
             </li>
             <li>
               <Link
-                href="/kinetic"
+                href="/app"
                 className="text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors relative group"
               >
                 Dashboard
@@ -95,7 +95,7 @@ export default async function Home(): Promise<ReactElement> {
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row gap-4">
           {session ? (
-            <Link href="/kinetic">
+            <Link href="/app">
               <Button className="btn-primary h-12 px-6 text-base inline-flex items-center gap-2 group">
                 Open Dashboard
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
@@ -106,7 +106,7 @@ export default async function Home(): Promise<ReactElement> {
               action={async () => {
                 'use server';
                 const { signIn } = await import('@/auth');
-                await signIn('google', { redirectTo: '/kinetic' });
+                await signIn('google', { redirectTo: '/app' });
               }}
             >
               <Button
@@ -283,7 +283,7 @@ export default async function Home(): Promise<ReactElement> {
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           {session ? (
-            <Link href="/kinetic">
+            <Link href="/app">
               <Button className="btn-primary h-12 px-8 text-base">Open Dashboard</Button>
             </Link>
           ) : (
@@ -291,7 +291,7 @@ export default async function Home(): Promise<ReactElement> {
               action={async () => {
                 'use server';
                 const { signIn } = await import('@/auth');
-                await signIn('google', { redirectTo: '/kinetic' });
+                await signIn('google', { redirectTo: '/app' });
               }}
             >
               <Button type="submit" className="btn-primary h-12 px-8 text-base">
@@ -334,7 +334,7 @@ export default async function Home(): Promise<ReactElement> {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/kinetic" className="hover:text-[var(--text-primary)] transition">
+                  <Link href="/app" className="hover:text-[var(--text-primary)] transition">
                     Dashboard
                   </Link>
                 </li>

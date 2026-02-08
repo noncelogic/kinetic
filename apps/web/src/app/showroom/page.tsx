@@ -561,7 +561,7 @@ export default function ShowroomPage(): ReactElement {
               Results
             </a>
             <Link
-              href="/kinetic"
+              href="/app"
               className="font-mono text-xs text-white/50 hover:text-[#00FF41] transition-colors uppercase tracking-wider"
             >
               Platform

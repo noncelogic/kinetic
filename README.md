@@ -1,116 +1,149 @@
-# Agentic Turbo Starter
+# Kinetic
 
-A production-ready monorepo boilerplate optimized for AI-assisted development.
+A production-ready full-stack starter template for rapidly building modern web applications.
 
-Build maintainable SaaS apps at 10x speed with agentic coding loops.
+<p align="center">
+  <img src="apps/web/public/brand/kinetic-logo.svg" alt="Kinetic" width="64" height="64">
+</p>
 
-## Why This Exists
+## Features
 
-Most AI-generated code is throwaway. This boilerplate changes that by:
-
-- **Structured for agents** — Clear package boundaries agents can reason about
-- **Type-safe end-to-end** — TypeScript + Zod + tRPC = less hallucination
-- **TDD-friendly** — Test files agents can verify against
-- **Monorepo by default** — Ship multiple apps from one codebase
-
-## Stack
-
-- **Build:** Turborepo + pnpm workspaces
-- **Apps:** Next.js 15 (App Router, Server Components)
-- **API:** tRPC 11 + Zod validation
-- **Database:** Prisma + PostgreSQL
-- **Auth:** Planned (Clerk integration pending)
-- **UI:** Tailwind + shadcn/ui
-- **Testing:** Vitest + Testing Library
-
-## Structure
-
-```
-├── apps/
-│   ├── web/              # Main SaaS app
-│   └── marketing/        # Landing page (static export)
-├── packages/
-│   ├── @repo/ui/         # Shared components
-│   ├── @repo/database/   # Prisma client + migrations
-│   ├── @repo/service/    # Business logic layer
-│   ├── @repo/entities/   # Shared types/schemas
-│   └── @repo/config/     # Shared configs (tsconfig, eslint)
-├── CLAUDE.md             # Agent instructions (Claude)
-├── GEMINI.md             # Agent instructions (Gemini)
-└── turbo.json
-```
-
-## Agent Instructions
-
-This repo includes `CLAUDE.md` and `GEMINI.md` files with:
-
-- Project structure overview
-- Code style guidelines
-- Common commands
-- Current feature context
-
-Update these files as your project evolves. Agents work better with context.
+- ⚡ **Next.js 14** — App Router, Server Components, Server Actions
+- 🔐 **Authentication** — NextAuth with Google OAuth (easily extensible)
+- 🗄️ **Database** — Neon Postgres + Drizzle ORM (type-safe queries)
+- 🔌 **API** — tRPC for end-to-end type safety
+- 🎨 **UI Components** — Pre-built Sidebar, Topbar, StatCards, Settings layouts
+- 🌙 **Dark/Light Mode** — CSS variables with matched contrast ratios
+- 📦 **Monorepo** — Turborepo + pnpm workspaces
+- ✅ **Quality Gates** — ESLint, Prettier, TypeScript strict mode
 
 ## Quick Start
 
 ```bash
-# Clone and install
+# Clone the template
+npx degit noncelogic/kinetic my-app
+
+# Install dependencies
+cd my-app
 pnpm install
 
-# Start dev (all apps)
-pnpm dev
+# Set up environment
+cp .env.example .env
+# Edit .env with your credentials
 
-# Start specific app
-pnpm dev --filter=web
-
-# Run tests
-pnpm test
-
-# Database
+# Push database schema
 pnpm db:push
-pnpm db:generate
+
+# Start development
+pnpm dev
 ```
 
-## Deploy (Vercel) — `apps/web`
+Open [http://localhost:3000](http://localhost:3000) to see your app.
 
-This repo is a pnpm + Turborepo monorepo. The deployable prototype is the Next.js app in `apps/web`.
+## Project Structure
 
-### Option A (recommended): Set Vercel Root Directory
+```
+kinetic/
+├── apps/
+│   └── web/                 # Next.js application
+│       ├── src/
+│       │   ├── app/         # App Router pages
+│       │   │   ├── app/     # Authenticated app routes
+│       │   │   ├── api/     # API routes
+│       │   │   └── ...
+│       │   ├── components/  # React components
+│       │   │   └── ui/      # UI component library
+│       │   ├── server/      # Server-side code (tRPC, auth)
+│       │   └── lib/         # Utilities
+│       └── public/          # Static assets
+├── packages/
+│   ├── db/                  # Database schema + client
+│   ├── ui/                  # Shared UI primitives
+│   └── ...
+└── tooling/                 # Shared configs (ESLint, TypeScript, Tailwind)
+```
 
-1. Import the repo in Vercel.
-2. In **Project Settings → General → Root Directory**, set: `apps/web`
-3. Set environment variables (see below).
-4. Deploy.
+## Environment Variables
 
-### Option B: Keep Root Directory at repo root
+```bash
+# Database (Neon)
+DATABASE_URL="postgresql://..."
 
-A root `vercel.json` is included to point Vercel at `apps/web`.
+# Auth (NextAuth)
+NEXTAUTH_SECRET="your-secret"
+NEXTAUTH_URL="http://localhost:3000"
+GOOGLE_CLIENT_ID="..."
+GOOGLE_CLIENT_SECRET="..."
 
-### Required environment variables
+# Optional
+UPLOADTHING_SECRET="..."
+UPLOADTHING_APP_ID="..."
+```
 
-- `DATABASE_URL` — PostgreSQL connection string used by Prisma.
+## Available Scripts
 
-### Smoke test
+```bash
+pnpm dev          # Start development server
+pnpm build        # Build for production
+pnpm start        # Start production server
+pnpm typecheck    # Run TypeScript checks
+pnpm lint         # Run ESLint
+pnpm format       # Run Prettier
+pnpm db:push      # Push schema to database
+pnpm db:studio    # Open Drizzle Studio
+```
 
-After deploy (or locally), the tRPC API route should respond:
+## UI Components
 
-- `GET /api/trpc/health.ping` → `{ "result": { "data": { "json": { "ok": true }}}}`
+Pre-built components for common patterns:
 
-## Philosophy
+| Component | Description |
+|-----------|-------------|
+| `Sidebar` | App navigation with sections |
+| `AppShell` | Layout wrapper with sidebar |
+| `Topbar` | Header with search and actions |
+| `PageHeader` | Page title with optional actions |
+| `PageContent` | Content wrapper with padding |
+| `StatCard` | Metric display card |
+| `StatGrid` | Grid layout for stats |
+| `SettingsLayout` | Settings page with side nav |
+| `ComingSoon` | Placeholder for unbuilt pages |
 
-1. **Packages are boundaries** — Each package has one job. Agents focus better.
-2. **Types are documentation** — Zod schemas = runtime validation + agent context.
-3. **Tests are specs** — Write the test first. Agent implements to pass.
-4. **Small PRs** — One feature, one package, one session.
+## Customization
 
-## Dogfooding
+### Branding
 
-This boilerplate is used to build real SaaS products. If it sucks, we feel it.
+Update the logo in `apps/web/public/brand/` and modify CSS variables in `apps/web/src/app/globals.css`.
+
+### Adding Pages
+
+1. Create a new folder in `apps/web/src/app/app/`
+2. Add a `page.tsx` file
+3. Update the navigation in `components/ui/sidebar.tsx`
+
+### Database
+
+1. Edit schema in `packages/db/src/schema/`
+2. Run `pnpm db:push` to apply changes
+3. Use the typed client in your API routes
+
+## Deployment
+
+### Railway
+
+```bash
+# Install Railway CLI
+npm i -g @railway/cli
+
+# Login and deploy
+railway login
+railway up
+```
+
+### Vercel
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/noncelogic/kinetic)
 
 ## License
 
-MIT
-
----
-
-_Built for the agentic era._
+MIT © [Nonce Logic](https://noncelogic.com)

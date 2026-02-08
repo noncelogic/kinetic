@@ -6,7 +6,7 @@ export default function AnalyticsPage(): ReactElement {
   return (
     <ComingSoon
       title="Analytics"
-      description="Policy metrics, evaluation trends, and performance insights — coming soon."
+      description="Usage metrics and insights — coming soon."
     />
   );
 }
