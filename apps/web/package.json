@@ -11,7 +11,7 @@
     "clean": "rimraf .next .turbo dist coverage"
   },
   "dependencies": {
-    "@auth/core": "^0.41.0",
+    "@auth/core": "^0.41.1",
     "@auth/prisma-adapter": "^2.11.1",
     "@repo/database": "workspace:*",
     "@repo/entities": "workspace:*",
